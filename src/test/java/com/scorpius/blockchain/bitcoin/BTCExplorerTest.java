@@ -39,14 +39,14 @@ class BTCExplorerTest {
                                    .filter(tx -> Arrays.stream(tx.getInputs()).anyMatch(in -> in.getAddress().equals(address.getHash())))
                                    .flatMap(tx -> Arrays.stream(tx.getInputs()))
                                    .filter(in -> in.getAddress().equals(address.getHash()))
-                                   .mapToLong(BTCInput::getValue)
+                                   .mapToLong(BTCInput::getSatoshis)
                                    .sum();
 
             long totalReceived = Arrays.stream(address.getTransactions())
                                        .filter(tx -> Arrays.stream(tx.getOutputs()).anyMatch(out -> out.getAddress().equals(address.getHash())))
                                        .flatMap(tx -> Arrays.stream(tx.getOutputs()))
                                        .filter(out -> out.getAddress().equals(address.getHash()))
-                                       .mapToLong(BTCOutput::getValue)
+                                       .mapToLong(BTCOutput::getSatoshis)
                                        .sum();
 
             // Test if sent/received/balance values match together
@@ -67,16 +67,16 @@ class BTCExplorerTest {
             BTCTransaction tx = explorer.getTransaction(txHash);
 
             long txInputValue = Arrays.stream(tx.getInputs())
-                                      .mapToLong(BTCInput::getValue)
+                                      .mapToLong(BTCInput::getSatoshis)
                                       .sum();
 
             long txOutputValue = Arrays.stream(tx.getOutputs())
-                                       .mapToLong(BTCOutput::getValue)
+                                       .mapToLong(BTCOutput::getSatoshis)
                                        .sum();
 
             Assertions.assertEquals(txHash, tx.getHash());
-            Assertions.assertEquals(tx.getInputSize(), tx.getInputs().length);
-            Assertions.assertEquals(tx.getOutputSize(), tx.getOutputs().length);
+            Assertions.assertEquals(tx.getInputsCount(), tx.getInputs().length);
+            Assertions.assertEquals(tx.getOutputsCount(), tx.getOutputs().length);
             Assertions.assertEquals(txInputValue, txOutputValue + tx.getFee());
         }
     }

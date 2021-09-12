@@ -11,17 +11,20 @@ import lombok.ToString;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class BTCInput {
 
+    @JsonProperty("addr")
     private String address;
 
-    private long value;
+    @JsonProperty("value")
+    private long satoshis;
 
+    @JsonProperty("spent")
     private boolean spent;
 
     @JsonProperty("prev_out")
     @SuppressWarnings("unused")
     private void unpackNested(Map<String, Object> input) {
         this.address = (String) input.get("addr");
-        this.value = ((Integer) input.get("value")).longValue();
+        this.satoshis = ((Integer) input.get("value")).longValue();
         this.spent = (boolean) input.get("spent");
     }
 }

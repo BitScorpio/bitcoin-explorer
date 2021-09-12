@@ -17,10 +17,10 @@ public class BTCTransaction {
     private long fee;
 
     @JsonProperty("vin_sz")
-    private int inputSize;
+    private int inputsCount;
 
     @JsonProperty("vout_sz")
-    private int outputSize;
+    private int outputsCount;
 
     @JsonProperty("inputs")
     private BTCInput[] inputs;

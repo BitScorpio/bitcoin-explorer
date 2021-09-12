@@ -14,7 +14,7 @@ public class BTCOutput {
     private String address;
 
     @JsonProperty("value")
-    private long value;
+    private long satoshis;
 
     @JsonProperty("spent")
     private boolean spent;

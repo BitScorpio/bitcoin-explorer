@@ -22,6 +22,9 @@ public class BTCAddress {
     @JsonProperty("final_balance")
     private int balance;
 
+    @JsonProperty("n_tx")
+    private int transactionsCount;
+
     @JsonProperty("txs")
     private BTCTransaction[] transactions;
 }
