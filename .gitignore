@@ -1,7 +1,9 @@
-# Build specific files
+# Build & test specific files
 */target/
 *.jar
 *.class
+/target/classes/log4j.properties
+/test.json
 
 # User-specific files
 .idea/
