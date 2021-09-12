@@ -1,6 +1,7 @@
 package com.scorpius.blockchain.bitcoin;
 
 import dev.yasper.rump.Rump;
+import dev.yasper.rump.response.HttpResponse;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Callable;
@@ -49,7 +50,7 @@ public class BTCExplorer {
      */
     // TODO: Get all transactions, currently limited to 50 by blockchain.info
     public BTCAddress getAddress(String address) throws Exception {
-        return honorRateLimit(() -> Rump.get(SINGLE_ADDRESS + address, BTCAddress.class).getBody());
+        return honorRateLimit(() -> Rump.get(SINGLE_ADDRESS + address, BTCAddress.class)).getBody();
     }
 
     /**
@@ -59,7 +60,7 @@ public class BTCExplorer {
      * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link #honorRateLimit(Callable)}.
      */
     public BTCTransaction getTransaction(String hash) throws Exception {
-        return honorRateLimit(() -> Rump.get(SINGLE_TRANSACTION + hash, BTCTransaction.class).getBody());
+        return honorRateLimit(() -> Rump.get(SINGLE_TRANSACTION + hash, BTCTransaction.class)).getBody();
     }
 
     /**
@@ -69,7 +70,7 @@ public class BTCExplorer {
      * @return Object returned by the {@code callable} parameter.
      * @throws Exception {@link InterruptedException} if the thread gets interrupted as well as any exceptions thrown inside the {@code callable} parameter.
      */
-    private <T> T honorRateLimit(Callable<T> callable) throws Exception {
+    private <T extends HttpResponse<?>> T honorRateLimit(Callable<T> callable) throws Exception {
         if (lastRequestInstant.plus(durationPerRequest).isBefore(Instant.now())) {
             try {
                 lock.lockInterruptibly();
