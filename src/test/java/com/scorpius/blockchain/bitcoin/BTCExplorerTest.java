@@ -2,18 +2,18 @@ package com.scorpius.blockchain.bitcoin;
 
 import java.util.Arrays;
 import lombok.SneakyThrows;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+@Slf4j
 class BTCExplorerTest {
 
-    private String[] txHashes;
-    private String[] addresses;
-    private BTCExplorer explorer;
+    private final String[] txHashes;
+    private final String[] addresses;
+    private final BTCExplorer explorer;
 
-    @BeforeEach
-    void setUp() {
+    public BTCExplorerTest() {
         this.explorer = new BTCExplorer();
 
         this.txHashes = new String[]{"5b361631bd5c47a5476cd3a1f216ab8c6219421c2d3c660fe23041b309e655a7",
@@ -32,9 +32,8 @@ class BTCExplorerTest {
     @SneakyThrows
     void getAddress() {
         for (String addr : addresses) {
+            log.debug("Testing address: " + addr);
             BTCAddress address = explorer.getAddress(addr);
-
-            System.out.println(address.getTransactions().length);
 
             long totalSent = Arrays.stream(address.getTransactions())
                                    .filter(tx -> Arrays.stream(tx.getInputs()).anyMatch(in -> in.getAddress().equals(address.getHash())))
@@ -64,6 +63,7 @@ class BTCExplorerTest {
     @SneakyThrows
     void getTransaction() {
         for (String txHash : txHashes) {
+            log.debug("Testing transaction: " + txHash);
             BTCTransaction tx = explorer.getTransaction(txHash);
 
             long txInputValue = Arrays.stream(tx.getInputs())
