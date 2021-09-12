@@ -1,0 +1,11 @@
+# Build specific files
+*/target/
+*.jar
+*.class
+
+# User-specific files
+.idea/
+
+# IntelliJ files
+out/
+*.iml
