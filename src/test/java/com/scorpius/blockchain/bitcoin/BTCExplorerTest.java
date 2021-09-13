@@ -34,12 +34,6 @@ class BTCExplorerTest {
         for (String addr : addresses) {
             log.debug("Testing address: " + addr);
             BTCAddress address = explorer.getAddress(addr);
-
-            for (int i = BTCExplorer.MAX_TXS_PER_CALL; i < address.getTransactionsCount(); i += BTCExplorer.MAX_TXS_PER_CALL) {
-                log.debug("Obtaining transactions at offset: {} (Total: {})", i, address.getTransactionsCount());
-                address.getTransactions().addAll(explorer.getAddress(addr, i).getTransactions());
-            }
-
             log.debug("Loaded {}/{} transactions", address.getTransactions().size(), address.getTransactionsCount());
 
             long totalSent = address.getTransactions()

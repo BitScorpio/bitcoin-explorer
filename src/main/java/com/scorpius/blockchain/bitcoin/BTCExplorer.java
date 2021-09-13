@@ -30,19 +30,24 @@ public class BTCExplorer {
     }
 
     /**
-     * Retrieves an address with the <strong>latest 50 transactions</strong> linked to it, see {@link BTCAddress} for specifics.
+     * Retrieves an address with all the transactions linked to it, ordered from latest to oldest, see {@link BTCAddress} for specifics.
+     * <pre><strong>Note:</strong> This method might take a very long time to return a result depending on how many transactions are associated with the provided address since it performs multiple API requests when there are more than 50 transactions. For an alternative see {@link #getAddress(String, int)}</pre>
      * @param address Address or Hash160.
      * @return The requested {@link BTCAddress} object.
      * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
      */
     public BTCAddress getAddress(String address) throws Exception {
-        return getAddress(address, 0);
+        BTCAddress btcAddress = getAddress(address, 0);
+        for (int offset = MAX_TXS_PER_CALL; offset < btcAddress.getTransactionsCount(); offset += MAX_TXS_PER_CALL) {
+            btcAddress.getTransactions().addAll(getAddress(address, offset).getTransactions());
+        }
+        return btcAddress;
     }
 
     /**
      * Retrieves an address with the <strong>latest 50 transactions</strong> linked to it <strong>starting from the desired offset</strong>,
      * see {@link BTCAddress} for specifics.
-     * <pre><strong>Note:</strong> Transactions are ordered order from latest to oldest, using <strong>1</strong> as an offset ignores the most recent transaction.</pre>
+     * <pre><strong>Note:</strong> Transactions are ordered order from latest to oldest, using <strong>0 (zero)</strong> as an offset obtains the most recent 50 transactions.</pre>
      * @param address Address or Hash160.
      * @param transactionsOffset The offset to begin obtaining transactions from
      * @return The requested {@link BTCAddress} object.
