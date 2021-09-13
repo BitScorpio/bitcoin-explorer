@@ -2,6 +2,7 @@ package com.scorpius.blockchain.bitcoin;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 import lombok.Getter;
 import lombok.ToString;
 
@@ -14,17 +15,17 @@ public class BTCAddress {
     private String hash;
 
     @JsonProperty("total_sent")
-    private int sent;
+    private long sent;
 
     @JsonProperty("total_received")
-    private int received;
+    private long received;
 
     @JsonProperty("final_balance")
-    private int balance;
+    private long balance;
 
     @JsonProperty("n_tx")
-    private int transactionsCount;
+    private long transactionsCount;
 
     @JsonProperty("txs")
-    private BTCTransaction[] transactions;
+    private List<BTCTransaction> transactions;
 }
