@@ -31,7 +31,7 @@ public class BTCExplorer {
 
     /**
      * Retrieves an address with all the transactions linked to it, ordered from latest to oldest, see {@link BTCAddress} for specifics.
-     * <pre><strong>Note:</strong> This method might take a very long time to return a result depending on how many transactions are associated with the provided address since it performs multiple API requests when there are more than 50 transactions. For an alternative see {@link #getAddress(String, int)}</pre>
+     * <pre><strong>Note:</strong> This method might take a very long time to return a result depending on how many transactions are associated with the provided address since it performs multiple API requests when there are more than 50 transactions. For an alternative see {@link #getAddress(String, int)}.</pre>
      * @param address Address or Hash160.
      * @return The requested {@link BTCAddress} object.
      * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
