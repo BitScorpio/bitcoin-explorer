@@ -25,6 +25,9 @@ public class BTCExplorer {
     @Setter
     private RateLimitAvoider rateLimitAvoider;
 
+    /**
+     * Creates an instance with 5 seconds duration per call & 1 millisecond timeout, see {@link RateLimitAvoider} for more details.
+     */
     public BTCExplorer() {
         this.rateLimitAvoider = new RateLimitAvoider(Duration.ofSeconds(5), Duration.ofMillis(1));
     }
