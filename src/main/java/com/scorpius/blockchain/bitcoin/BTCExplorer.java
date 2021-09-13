@@ -26,7 +26,7 @@ public class BTCExplorer {
     private RateLimitAvoider rateLimitAvoider;
 
     public BTCExplorer() {
-        this.rateLimitAvoider = new RateLimitAvoider(Duration.ofSeconds(5));
+        this.rateLimitAvoider = new RateLimitAvoider(Duration.ofSeconds(5), Duration.ofMillis(1));
     }
 
     /**

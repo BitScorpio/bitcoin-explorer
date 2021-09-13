@@ -37,10 +37,14 @@ public class RateLimitAvoider {
      */
     private Instant lastCallInstant;
 
-    public RateLimitAvoider(Duration durationPerCall) {
+    /**
+     * @param durationPerCall The allowed duration between two consecutive calls
+     * @param timeout The sleep duration before re-attempting a call when {@link #durationPerCall} is violated.
+     */
+    public RateLimitAvoider(Duration durationPerCall, Duration timeout) {
         this.lock = new ReentrantLock(true);
         this.durationPerCall = durationPerCall;
-        this.timeout = Duration.ofMillis(1);
+        this.timeout = timeout;
         this.lastCallInstant = Instant.now().minus(durationPerCall);
     }
 
