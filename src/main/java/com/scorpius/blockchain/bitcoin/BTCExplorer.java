@@ -48,7 +48,7 @@ public class BTCExplorer {
      * Retrieves an address with the <strong>latest 50 transactions</strong> linked to it <strong>starting from the desired offset</strong>,
      * see {@link BTCAddress} for specifics.
      * <pre><strong>Note:</strong> Transactions are ordered order from latest to oldest, using <strong>0 (zero)</strong> as an offset obtains the most recent 50 transactions.</pre>
-     * @param address Address or Hash160.
+     * @param address Base58 or hash160 address.
      * @param transactionsOffset The offset to begin obtaining transactions from
      * @return The requested {@link BTCAddress} object.
      * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
