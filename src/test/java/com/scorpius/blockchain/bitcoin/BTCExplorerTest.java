@@ -16,13 +16,13 @@ class BTCExplorerTest {
     public BTCExplorerTest() {
         this.explorer = new BTCExplorer();
 
-        this.txHashes = new String[]{"5b361631bd5c47a5476cd3a1f216ab8c6219421c2d3c660fe23041b309e655a7",
-                                     "38d97c6bfecdbe201e17787534674bccb57f292a19a99f9f421ebbf6347fbd45",
+        this.txHashes = new String[]{"659135664894e50040830edb516a76f704fd2be409ecd8d1ea9916c002ab28a2",
+                                     "5143cf232576ae53e8991ca389334563f14ea7a7c507a3e081fbef2538c84f6e",
                                      "38d97c6bfecdbe201e17787534674bccb57f292a19a99f9f421ebbf6347fbd45",
                                      "5b361631bd5c47a5476cd3a1f216ab8c6219421c2d3c660fe23041b309e655a7"};
 
-        this.addresses = new String[]{"1NWjoHZavQ2Fud4MAoHkDuYFDVGof4u8pr",
-                                      "3Dxq8WVEF5CHUcNVPmBVFdTKUhoiafMVwg",
+        this.addresses = new String[]{"3EzsqqUTuQRzyAz9uJNKKnoWqTrJisr9j3",
+                                      "1KRdZbn6BqfuALTEQJsmX24h8hG8C3YobM",
                                       "12RUqdJfKR44q6fJd3RbbfSfST84tvSCAV",
                                       "3D7VugNn3u8kMZXj1dSYvwHUsy92b85d94"};
 
@@ -35,19 +35,28 @@ class BTCExplorerTest {
             log.debug("Testing address: " + addr);
             BTCAddress address = explorer.getAddress(addr);
 
-            long totalSent = Arrays.stream(address.getTransactions())
-                                   .filter(tx -> Arrays.stream(tx.getInputs()).anyMatch(in -> in.getAddress().equals(address.getHash())))
-                                   .flatMap(tx -> Arrays.stream(tx.getInputs()))
-                                   .filter(in -> in.getAddress().equals(address.getHash()))
-                                   .mapToLong(BTCInput::getSatoshis)
-                                   .sum();
+            for (int i = BTCExplorer.MAX_TXS_PER_CALL; i < address.getTransactionsCount(); i += BTCExplorer.MAX_TXS_PER_CALL) {
+                log.debug("Obtaining transactions at offset: {} (Total: {})", i, address.getTransactionsCount());
+                address.getTransactions().addAll(explorer.getAddress(addr, i).getTransactions());
+            }
 
-            long totalReceived = Arrays.stream(address.getTransactions())
-                                       .filter(tx -> Arrays.stream(tx.getOutputs()).anyMatch(out -> out.getAddress().equals(address.getHash())))
-                                       .flatMap(tx -> Arrays.stream(tx.getOutputs()))
-                                       .filter(out -> out.getAddress().equals(address.getHash()))
-                                       .mapToLong(BTCOutput::getSatoshis)
-                                       .sum();
+            log.debug("Loaded {}/{} transactions", address.getTransactions().size(), address.getTransactionsCount());
+
+            long totalSent = address.getTransactions()
+                                    .stream()
+                                    .filter(tx -> Arrays.stream(tx.getInputs()).anyMatch(in -> in.getAddress().equals(address.getHash())))
+                                    .flatMap(tx -> Arrays.stream(tx.getInputs()))
+                                    .filter(in -> in.getAddress().equals(address.getHash()))
+                                    .mapToLong(BTCInput::getSatoshis)
+                                    .sum();
+
+            long totalReceived = address.getTransactions()
+                                        .stream()
+                                        .filter(tx -> Arrays.stream(tx.getOutputs()).anyMatch(out -> out.getAddress().equals(address.getHash())))
+                                        .flatMap(tx -> Arrays.stream(tx.getOutputs()))
+                                        .filter(out -> out.getAddress().equals(address.getHash()))
+                                        .mapToLong(BTCOutput::getSatoshis)
+                                        .sum();
 
             // Test if sent/received/balance values match together
             Assertions.assertEquals(address.getBalance(), address.getReceived() - address.getSent());
