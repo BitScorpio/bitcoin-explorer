@@ -24,7 +24,7 @@ public class BTCInput {
     @SuppressWarnings("unused")
     private void unpackNested(Map<String, Object> input) {
         this.address = (String) input.get("addr");
-        this.satoshis = ((Integer) input.get("value")).longValue();
+        this.satoshis = ((Number) input.get("value")).longValue();
         this.spent = (boolean) input.get("spent");
     }
 }
