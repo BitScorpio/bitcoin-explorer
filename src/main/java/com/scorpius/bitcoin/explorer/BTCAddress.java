@@ -1,4 +1,4 @@
-package com.scorpius.blockchain.bitcoin.explorer;
+package com.scorpius.bitcoin.explorer;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.util.List;

@@ -1,14 +1,9 @@
-package com.scorpius.blockchain.bitcoin;
+package com.scorpius.bitcoin.explorer;
 
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
-import com.scorpius.blockchain.bitcoin.explorer.BTCAddress;
-import com.scorpius.blockchain.bitcoin.explorer.BTCExplorer;
-import com.scorpius.blockchain.bitcoin.explorer.BTCInput;
-import com.scorpius.blockchain.bitcoin.explorer.BTCOutput;
-import com.scorpius.blockchain.bitcoin.explorer.BTCTransaction;
-import com.scorpius.blockchain.bitcoin.explorer.blockchain.BlockchainBTCExplorer;
-import com.scorpius.blockchain.bitcoin.explorer.blockcypher.BlockcypherBTCExplorer;
+import com.scorpius.bitcoin.explorer.blockchain.BlockchainBTCExplorer;
+import com.scorpius.bitcoin.explorer.blockcypher.BlockcypherBTCExplorer;
 import java.util.Arrays;
 import java.util.List;
 import lombok.SneakyThrows;

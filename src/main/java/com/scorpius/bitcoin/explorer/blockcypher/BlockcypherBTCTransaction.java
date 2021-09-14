@@ -1,21 +1,21 @@
-package com.scorpius.blockchain.bitcoin.explorer.blockchain;
+package com.scorpius.bitcoin.explorer.blockcypher;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.scorpius.blockchain.bitcoin.explorer.BTCInput;
-import com.scorpius.blockchain.bitcoin.explorer.BTCOutput;
-import com.scorpius.blockchain.bitcoin.explorer.BTCTransaction;
+import com.scorpius.bitcoin.explorer.BTCInput;
+import com.scorpius.bitcoin.explorer.BTCOutput;
+import com.scorpius.bitcoin.explorer.BTCTransaction;
 import lombok.ToString;
 
 @ToString()
-public class BlockchainBTCTransaction extends BTCTransaction {
+public class BlockcypherBTCTransaction extends BTCTransaction {
 
     @JsonProperty("hash")
     private String hash;
 
-    @JsonProperty(value = "block_height")
-    private Long blockHeight;
+    @JsonProperty("block_height")
+    private long blockHeight;
 
-    @JsonProperty("fee")
+    @JsonProperty("fees")
     private long fee;
 
     @JsonProperty("vin_sz")
@@ -25,10 +25,10 @@ public class BlockchainBTCTransaction extends BTCTransaction {
     private int outputsCount;
 
     @JsonProperty("inputs")
-    private BlockchainBTCInput[] inputs;
+    private BlockcypherBTCInput[] inputs;
 
-    @JsonProperty("out")
-    private BlockchainBTCOutput[] outputs;
+    @JsonProperty("outputs")
+    private BlockcypherBTCOutput[] outputs;
 
     @Override
     public String getHash() {
@@ -37,7 +37,7 @@ public class BlockchainBTCTransaction extends BTCTransaction {
 
     @Override
     public long getBlockHeight() {
-        return blockHeight == null ? -1 : blockHeight;
+        return blockHeight;
     }
 
     @Override

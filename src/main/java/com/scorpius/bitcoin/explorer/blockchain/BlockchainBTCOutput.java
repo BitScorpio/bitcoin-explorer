@@ -1,7 +1,7 @@
-package com.scorpius.blockchain.bitcoin.explorer.blockchain;
+package com.scorpius.bitcoin.explorer.blockchain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.scorpius.blockchain.bitcoin.explorer.BTCOutput;
+import com.scorpius.bitcoin.explorer.BTCOutput;
 import lombok.ToString;
 
 @ToString()

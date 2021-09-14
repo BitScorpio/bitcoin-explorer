@@ -1,11 +1,12 @@
-package com.scorpius.blockchain.bitcoin.explorer.blockcypher;
+package com.scorpius.bitcoin.explorer.blockchain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.scorpius.blockchain.bitcoin.explorer.BTCOutput;
+import com.scorpius.bitcoin.explorer.BTCInput;
+import java.util.Map;
 import lombok.ToString;
 
 @ToString()
-public class BlockcypherBTCOutput extends BTCOutput {
+public class BlockchainBTCInput extends BTCInput {
 
     @JsonProperty("addr")
     private String address;
@@ -13,10 +14,11 @@ public class BlockcypherBTCOutput extends BTCOutput {
     @JsonProperty("value")
     private long satoshis;
 
-    @JsonProperty("addresses")
+    @JsonProperty("prev_out")
     @SuppressWarnings("unused")
-    private void unpackNested(Object[] addresses) {
-        this.address = (String) addresses[0];
+    private void unpackNested(Map<String, Object> input) {
+        this.address = (String) input.get("addr");
+        this.satoshis = ((Number) input.get("value")).longValue();
     }
 
     @Override

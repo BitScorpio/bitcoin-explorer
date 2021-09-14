@@ -1,4 +1,4 @@
-package com.scorpius.blockchain.bitcoin.explorer;
+package com.scorpius.bitcoin.explorer;
 
 /**
  * An API implementation for the <a href="https://www.blockchain.com/api">Blockchain Explorer API</a>.
