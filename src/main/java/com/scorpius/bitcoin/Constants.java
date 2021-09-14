@@ -2,6 +2,9 @@ package com.scorpius.bitcoin;
 
 import java.time.Duration;
 
+/**
+ * Constant values used across the library
+ */
 public class Constants {
 
     /**
