@@ -1,7 +1,4 @@
-package com.scorpius.blockchain.bitcoin.explorers;
-
-import com.scorpius.blockchain.bitcoin.pojos.BTCAddress;
-import com.scorpius.blockchain.bitcoin.pojos.BTCTransaction;
+package com.scorpius.blockchain.bitcoin.explorer;
 
 /**
  * An API implementation for the <a href="https://www.blockchain.com/api">Blockchain Explorer API</a>.

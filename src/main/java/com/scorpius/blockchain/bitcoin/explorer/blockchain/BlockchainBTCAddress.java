@@ -1,20 +1,16 @@
-package com.scorpius.blockchain.bitcoin.pojos;
+package com.scorpius.blockchain.bitcoin.explorer.blockchain;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.scorpius.blockchain.bitcoin.explorer.BTCAddress;
+import com.scorpius.blockchain.bitcoin.explorer.BTCTransaction;
 import java.util.List;
 import lombok.ToString;
 
 @ToString
-public class BlockcipherBTCAddress implements BTCAddress {
+public class BlockchainBTCAddress extends BTCAddress {
 
     @JsonProperty("address")
     private String hash;
-
-    @JsonProperty("total_sent")
-    private long sent;
-
-    @JsonProperty("total_received")
-    private long received;
 
     @JsonProperty("final_balance")
     private long balance;
@@ -23,21 +19,11 @@ public class BlockcipherBTCAddress implements BTCAddress {
     private long transactionsCount;
 
     @JsonProperty("txs")
-    private List<BlockcipherBTCTransaction> transactions;
+    private List<BlockchainBTCTransaction> transactions;
 
     @Override
     public String getHash() {
         return hash;
-    }
-
-    @Override
-    public long getSent() {
-        return sent;
-    }
-
-    @Override
-    public long getReceived() {
-        return received;
     }
 
     @Override

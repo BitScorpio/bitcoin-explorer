@@ -1,10 +1,11 @@
-package com.scorpius.blockchain.bitcoin.pojos;
+package com.scorpius.blockchain.bitcoin.explorer.blockcypher;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.scorpius.blockchain.bitcoin.explorer.BTCInput;
 import lombok.ToString;
 
 @ToString()
-public class BlockcipherBTCInput implements BTCInput {
+public class BlockcypherBTCInput extends BTCInput {
 
     @JsonProperty("address")
     private String address;

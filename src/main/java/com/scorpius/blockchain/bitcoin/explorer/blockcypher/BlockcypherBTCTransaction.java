@@ -1,13 +1,19 @@
-package com.scorpius.blockchain.bitcoin.pojos;
+package com.scorpius.blockchain.bitcoin.explorer.blockcypher;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.scorpius.blockchain.bitcoin.explorer.BTCInput;
+import com.scorpius.blockchain.bitcoin.explorer.BTCOutput;
+import com.scorpius.blockchain.bitcoin.explorer.BTCTransaction;
 import lombok.ToString;
 
 @ToString()
-public class BlockcipherBTCTransaction implements BTCTransaction {
+public class BlockcypherBTCTransaction extends BTCTransaction {
 
     @JsonProperty("hash")
     private String hash;
+
+    @JsonProperty("block_height")
+    private long blockHeight;
 
     @JsonProperty("fees")
     private long fee;
@@ -19,14 +25,19 @@ public class BlockcipherBTCTransaction implements BTCTransaction {
     private int outputsCount;
 
     @JsonProperty("inputs")
-    private BlockcipherBTCInput[] inputs;
+    private BlockcypherBTCInput[] inputs;
 
     @JsonProperty("outputs")
-    private BlockcipherBTCOutput[] outputs;
+    private BlockcypherBTCOutput[] outputs;
 
     @Override
     public String getHash() {
         return hash;
+    }
+
+    @Override
+    public long getBlockHeight() {
+        return blockHeight;
     }
 
     @Override

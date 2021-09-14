@@ -1,10 +1,9 @@
-package com.scorpius.blockchain.bitcoin.explorers;
+package com.scorpius.blockchain.bitcoin.explorer.blockchain;
 
 import com.scorpius.blockchain.RateLimitAvoider;
-import com.scorpius.blockchain.bitcoin.pojos.BTCAddress;
-import com.scorpius.blockchain.bitcoin.pojos.BTCTransaction;
-import com.scorpius.blockchain.bitcoin.pojos.BlockchainBTCAddress;
-import com.scorpius.blockchain.bitcoin.pojos.BlockchainBTCTransaction;
+import com.scorpius.blockchain.bitcoin.explorer.BTCAddress;
+import com.scorpius.blockchain.bitcoin.explorer.BTCExplorer;
+import com.scorpius.blockchain.bitcoin.explorer.BTCTransaction;
 import dev.yasper.rump.Rump;
 import java.time.Duration;
 import java.util.concurrent.Callable;

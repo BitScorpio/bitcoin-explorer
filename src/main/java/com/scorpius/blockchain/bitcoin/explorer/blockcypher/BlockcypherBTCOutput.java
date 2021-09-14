@@ -1,10 +1,11 @@
-package com.scorpius.blockchain.bitcoin.pojos;
+package com.scorpius.blockchain.bitcoin.explorer.blockcypher;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.scorpius.blockchain.bitcoin.explorer.BTCOutput;
 import lombok.ToString;
 
 @ToString()
-public class BlockcipherBTCOutput implements BTCOutput {
+public class BlockcypherBTCOutput extends BTCOutput {
 
     @JsonProperty("addr")
     private String address;
