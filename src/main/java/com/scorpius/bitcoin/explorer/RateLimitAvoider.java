@@ -49,6 +49,13 @@ public class RateLimitAvoider {
     }
 
     /**
+     * Checks if a request can be immediately processed without triggering a rate-limit.
+     */
+    public boolean canProcess() {
+        return lastCallInstant.plus(durationPerCall).isBefore(Instant.now());
+    }
+
+    /**
      * Calls should go through this method to avoid being rate-limited.
      * @param callable The {@link Callable} that should be used to return a value.
      * @param <T> Type parameter of the {@code callable} parameter.
@@ -56,7 +63,7 @@ public class RateLimitAvoider {
      * @throws Exception {@link InterruptedException} if the thread gets interrupted as well as any exceptions thrown inside the {@code callable} parameter.
      */
     public <T> T process(Callable<T> callable) throws Exception {
-        if (lastCallInstant.plus(durationPerCall).isBefore(Instant.now())) {
+        if (canProcess()) {
             try {
                 lock.lockInterruptibly();
                 return callable.call();
