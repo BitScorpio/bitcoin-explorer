@@ -33,6 +33,7 @@ public class RateLimitAvoider {
     private Instant lastCallInstant;
 
     /**
+     * Creates an instance that regulates code execution according to the given parameters.
      * @param durationPerCall The allowed duration between two consecutive calls
      * @param retrySleepDuration The sleep duration before re-attempting a call when {@link #durationPerCall} is violated.
      */
