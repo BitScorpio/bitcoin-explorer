@@ -15,9 +15,9 @@ import lombok.Setter;
  */
 public class BlockchainBTCExplorer implements BTCExplorer {
 
-    private static final String BASE = "https://blockchain.info/";
-    private static final String SINGLE_ADDRESS = BASE + "rawaddr/";
-    private static final String SINGLE_TRANSACTION = BASE + "rawtx/";
+    private static final String API_BASE = "https://blockchain.info/";
+    private static final String API_ADDRESS = API_BASE + "rawaddr/";
+    private static final String API_TRANSACTION = API_BASE + "rawtx/";
 
     /**
      * Maximum amount of transactions retrieved per API request as dictated by the <a href="https://www.blockchain.com/api/blockchain_api">Blockchain Data API</a>
@@ -68,7 +68,7 @@ public class BlockchainBTCExplorer implements BTCExplorer {
      * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
      */
     public BTCAddress getAddress(String address, int transactionsOffset) throws Exception {
-        Callable<BTCAddress> callable = () -> Rump.get(SINGLE_ADDRESS + address + "?limit=" + MAX_TXS_PER_CALL + "&offset=" + transactionsOffset, BlockchainBTCAddress.class).getBody();
+        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "?limit=" + MAX_TXS_PER_CALL + "&offset=" + transactionsOffset, BlockchainBTCAddress.class).getBody();
         if (rateLimitAvoider == null) {
             return callable.call();
         }
@@ -83,7 +83,7 @@ public class BlockchainBTCExplorer implements BTCExplorer {
      */
     @Override
     public BTCTransaction getTransaction(String hash) throws Exception {
-        Callable<BTCTransaction> callable = () -> Rump.get(SINGLE_TRANSACTION + hash, BlockchainBTCTransaction.class).getBody();
+        Callable<BTCTransaction> callable = () -> Rump.get(API_TRANSACTION + hash, BlockchainBTCTransaction.class).getBody();
         if (rateLimitAvoider == null) {
             return callable.call();
         }

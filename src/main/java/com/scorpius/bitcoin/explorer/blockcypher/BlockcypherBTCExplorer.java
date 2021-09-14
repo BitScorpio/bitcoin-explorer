@@ -15,9 +15,9 @@ import lombok.Setter;
  */
 public class BlockcypherBTCExplorer implements BTCExplorer {
 
-    private static final String BASE = "https://api.blockcypher.com/v1/btc/main/";
-    private static final String SINGLE_ADDRESS = BASE + "addrs/";
-    private static final String SINGLE_TRANSACTION = BASE + "txs/";
+    private static final String API_BASE = "https://api.blockcypher.com/v1/btc/main/";
+    private static final String API_ADDRESS = API_BASE + "addrs/";
+    private static final String API_TRANSACTION = API_BASE + "txs/";
 
     /**
      * Maximum amount of transactions retrieved per API request as dictated by the <a href="https://www.blockcypher.com/dev/bitcoin/#address-full-endpoint">Blockciper Address API</a>
@@ -70,7 +70,7 @@ public class BlockcypherBTCExplorer implements BTCExplorer {
      */
     public BTCAddress getAddress(String address, long beforeBlockHeight) throws Exception {
         String beforeParam = beforeBlockHeight >= 0 ? "&before=" + beforeBlockHeight : "";
-        Callable<BTCAddress> callable = () -> Rump.get(SINGLE_ADDRESS + address + "/full?limit=" + MAX_TXS_PER_CALL + "&txlimit=1000000" + beforeParam, BlockcypherBTCAddress.class).getBody();
+        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "/full?limit=" + MAX_TXS_PER_CALL + "&txlimit=1000000" + beforeParam, BlockcypherBTCAddress.class).getBody();
         if (rateLimitAvoider == null) {
             return callable.call();
         }
@@ -85,7 +85,7 @@ public class BlockcypherBTCExplorer implements BTCExplorer {
      */
     @Override
     public BTCTransaction getTransaction(String hash) throws Exception {
-        Callable<BTCTransaction> callable = () -> Rump.get(SINGLE_TRANSACTION + hash + "?limit=1000000", BlockcypherBTCTransaction.class).getBody();
+        Callable<BTCTransaction> callable = () -> Rump.get(API_TRANSACTION + hash + "?limit=1000000", BlockcypherBTCTransaction.class).getBody();
         if (rateLimitAvoider == null) {
             return callable.call();
         }
