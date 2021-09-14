@@ -1,15 +1,12 @@
-package com.scorpius.blockchain.bitcoin;
+package com.scorpius.blockchain.bitcoin.explorer.blockchain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.scorpius.blockchain.bitcoin.explorer.BTCInput;
 import java.util.Map;
-import lombok.Getter;
 import lombok.ToString;
 
-@Getter
 @ToString()
-@JsonIgnoreProperties(ignoreUnknown = true)
-public class BTCInput {
+public class BlockchainBTCInput extends BTCInput {
 
     @JsonProperty("addr")
     private String address;
@@ -17,14 +14,20 @@ public class BTCInput {
     @JsonProperty("value")
     private long satoshis;
 
-    @JsonProperty("spent")
-    private boolean spent;
-
     @JsonProperty("prev_out")
     @SuppressWarnings("unused")
     private void unpackNested(Map<String, Object> input) {
         this.address = (String) input.get("addr");
         this.satoshis = ((Number) input.get("value")).longValue();
-        this.spent = (boolean) input.get("spent");
+    }
+
+    @Override
+    public String getAddress() {
+        return address;
+    }
+
+    @Override
+    public long getSatoshis() {
+        return satoshis;
     }
 }
