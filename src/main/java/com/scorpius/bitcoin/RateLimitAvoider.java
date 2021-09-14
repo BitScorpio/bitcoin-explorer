@@ -1,4 +1,4 @@
-package com.scorpius.bitcoin.explorer;
+package com.scorpius.bitcoin;
 
 import java.time.Duration;
 import java.time.Instant;
@@ -25,7 +25,7 @@ public class RateLimitAvoider {
     /**
      * The sleep duration before re-attempting a call when {@link #durationPerCall} is violated.
      */
-    private final Duration timeout;
+    private final Duration retrySleepDuration;
 
     /**
      * The last call instant.
@@ -34,12 +34,12 @@ public class RateLimitAvoider {
 
     /**
      * @param durationPerCall The allowed duration between two consecutive calls
-     * @param timeout The sleep duration before re-attempting a call when {@link #durationPerCall} is violated.
+     * @param retrySleepDuration The sleep duration before re-attempting a call when {@link #durationPerCall} is violated.
      */
-    public RateLimitAvoider(Duration durationPerCall, Duration timeout) {
+    public RateLimitAvoider(Duration durationPerCall, Duration retrySleepDuration) {
         this.lock = new ReentrantLock(true);
         this.durationPerCall = durationPerCall;
-        this.timeout = timeout;
+        this.retrySleepDuration = retrySleepDuration;
         this.lastCallInstant = Instant.now().minus(durationPerCall);
     }
 
@@ -68,7 +68,7 @@ public class RateLimitAvoider {
                 lastCallInstant = Instant.now();
                 return result;
             } else {
-                Thread.sleep(timeout.toMillis());
+                Thread.sleep(retrySleepDuration.toMillis());
                 return process(callable);
             }
         } finally {

@@ -1,9 +1,10 @@
 package com.scorpius.bitcoin.explorer.blockcypher;
 
+import com.scorpius.bitcoin.Constants;
+import com.scorpius.bitcoin.RateLimitAvoider;
 import com.scorpius.bitcoin.explorer.BTCAddress;
 import com.scorpius.bitcoin.explorer.BTCExplorer;
 import com.scorpius.bitcoin.explorer.BTCTransaction;
-import com.scorpius.bitcoin.explorer.RateLimitAvoider;
 import dev.yasper.rump.Rump;
 import java.time.Duration;
 import java.util.List;
@@ -25,10 +26,10 @@ public class BlockcypherBTCExplorer extends BTCExplorer {
     public static final int MAX_TXS_PER_CALL = 50;
 
     /**
-     * Creates an instance with 18 seconds duration per call & 1 millisecond timeout, see {@link RateLimitAvoider} for more details.
+     * Creates an instance with 18 seconds duration per call & {@link Constants#DEFAULT_RETRY_SLEEP_DURATION}, see {@link RateLimitAvoider} for more details.
      */
     public BlockcypherBTCExplorer() {
-        this(new RateLimitAvoider(Duration.ofSeconds(18), Duration.ofSeconds(1)));
+        this(new RateLimitAvoider(Duration.ofSeconds(18), Constants.DEFAULT_RETRY_SLEEP_DURATION));
     }
 
     /**

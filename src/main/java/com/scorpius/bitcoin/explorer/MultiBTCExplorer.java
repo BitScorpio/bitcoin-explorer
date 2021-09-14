@@ -1,5 +1,7 @@
 package com.scorpius.bitcoin.explorer;
 
+import com.scorpius.bitcoin.Constants;
+import com.scorpius.bitcoin.RateLimitAvoider;
 import com.scorpius.bitcoin.explorer.blockchain.BlockchainBTCExplorer;
 import com.scorpius.bitcoin.explorer.blockcypher.BlockcypherBTCExplorer;
 import java.time.Duration;
@@ -17,34 +19,34 @@ public class MultiBTCExplorer extends BTCExplorer {
     private final BTCExplorer[] explorers;
 
     /**
-     * The sleep duration before re-attempting a call when all child {@link BTCExplorer}s' {@link com.scorpius.bitcoin.explorer.RateLimitAvoider}s cannot process requests.
+     * The sleep duration before re-attempting a call when all child {@link BTCExplorer}s' {@link RateLimitAvoider}s cannot process requests.
      */
-    private final Duration timeout;
+    private final Duration retrySleepDuration;
 
     /**
-     * Creates an instance with all available {@link BTCExplorer} implementations & 1 millisecond timeout when all child {@link BTCExplorer}s' {@link com.scorpius.bitcoin.explorer.RateLimitAvoider}s cannot process requests.
+     * Creates an instance with all available {@link BTCExplorer} implementations & {@link Constants#DEFAULT_RETRY_SLEEP_DURATION} when all child {@link BTCExplorer}s' {@link RateLimitAvoider}s cannot process requests.
      */
     public MultiBTCExplorer() {
-        this(Duration.ofMillis(1), new BlockchainBTCExplorer(), new BlockcypherBTCExplorer());
+        this(Constants.DEFAULT_RETRY_SLEEP_DURATION, new BlockchainBTCExplorer(), new BlockcypherBTCExplorer());
     }
 
     /**
-     * Creates an instance with selection of {@link BTCExplorer} implementations & 1 millisecond timeout when all child {@link BTCExplorer}s' {@link com.scorpius.bitcoin.explorer.RateLimitAvoider}s cannot process requests.
+     * Creates an instance with selection of {@link BTCExplorer} implementations & {@link Constants#DEFAULT_RETRY_SLEEP_DURATION} when all child {@link BTCExplorer}s' {@link RateLimitAvoider}s cannot process requests.
      * @param explorers child {@link BTCExplorer}s to be utilized.
      */
     public MultiBTCExplorer(BTCExplorer... explorers) {
-        this(Duration.ofSeconds(1), explorers);
+        this(Constants.DEFAULT_RETRY_SLEEP_DURATION, explorers);
     }
 
     /**
      *
-     * @param timeout The sleep duration before re-attempting a call when all child {@link BTCExplorer}s' {@link com.scorpius.bitcoin.explorer.RateLimitAvoider}s cannot process requests.
+     * @param retrySleepDuration The sleep duration before re-attempting a call when all child {@link BTCExplorer}s' {@link RateLimitAvoider}s cannot process requests.
      * @param explorers child {@link BTCExplorer}s to be utilized.
      */
-    public MultiBTCExplorer(Duration timeout, BTCExplorer... explorers) {
+    public MultiBTCExplorer(Duration retrySleepDuration, BTCExplorer... explorers) {
         super(null);
         this.explorers = explorers;
-        this.timeout = timeout;
+        this.retrySleepDuration = retrySleepDuration;
     }
 
     /**
@@ -58,7 +60,7 @@ public class MultiBTCExplorer extends BTCExplorer {
                 return explorer.getAddressWithCombinedTransactions(address, existingAddress);
             }
         }
-        Thread.sleep(timeout.toMillis());
+        Thread.sleep(retrySleepDuration.toMillis());
         return getAddressWithCombinedTransactions(address, existingAddress);
     }
 
@@ -75,7 +77,7 @@ public class MultiBTCExplorer extends BTCExplorer {
                 return explorer.getTransaction(hash);
             }
         }
-        Thread.sleep(timeout.toMillis());
+        Thread.sleep(retrySleepDuration.toMillis());
         return getTransaction(hash);
     }
 }

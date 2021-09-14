@@ -1,5 +1,6 @@
 package com.scorpius.bitcoin.explorer;
 
+import com.scorpius.bitcoin.RateLimitAvoider;
 import java.util.concurrent.Callable;
 import javax.annotation.Nullable;
 import lombok.Getter;
