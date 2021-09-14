@@ -32,7 +32,15 @@ public class BlockcypherBTCExplorer implements BTCExplorer {
      * Creates an instance with 18 seconds duration per call & 1 millisecond timeout, see {@link RateLimitAvoider} for more details.
      */
     public BlockcypherBTCExplorer() {
-        this.rateLimitAvoider = new RateLimitAvoider(Duration.ofSeconds(18), Duration.ofMillis(1));
+        this(new RateLimitAvoider(Duration.ofSeconds(18), Duration.ofMillis(1)));
+    }
+
+    /**
+     * Creates an instance with a custom {@link RateLimitAvoider}
+     * @param rateLimitAvoider Provided {@link RateLimitAvoider}
+     */
+    public BlockcypherBTCExplorer(RateLimitAvoider rateLimitAvoider) {
+        this.rateLimitAvoider = rateLimitAvoider;
     }
 
     /**

@@ -32,7 +32,15 @@ public class BlockchainBTCExplorer implements BTCExplorer {
      * Creates an instance with 5 seconds duration per call & 1 millisecond timeout, see {@link RateLimitAvoider} for more details.
      */
     public BlockchainBTCExplorer() {
-        this.rateLimitAvoider = new RateLimitAvoider(Duration.ofSeconds(5), Duration.ofMillis(1));
+        this(new RateLimitAvoider(Duration.ofSeconds(5), Duration.ofMillis(1)));
+    }
+
+    /**
+     * Creates an instance with a custom {@link RateLimitAvoider}
+     * @param rateLimitAvoider Provided {@link RateLimitAvoider}
+     */
+    public BlockchainBTCExplorer(RateLimitAvoider rateLimitAvoider) {
+        this.rateLimitAvoider = rateLimitAvoider;
     }
 
     /**
