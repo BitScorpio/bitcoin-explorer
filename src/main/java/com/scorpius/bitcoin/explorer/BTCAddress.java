@@ -14,6 +14,13 @@ public abstract class BTCAddress {
 
     public abstract List<BTCTransaction> getTransactions();
 
+    public void combineTransactions(BTCAddress address) {
+        if (!getHash().equals(address.getHash())) {
+            throw new RuntimeException("Address hashes do not match");
+        }
+        getTransactions().addAll(address.getTransactions());
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) {

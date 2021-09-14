@@ -7,13 +7,12 @@ import com.scorpius.bitcoin.explorer.RateLimitAvoider;
 import dev.yasper.rump.Rump;
 import java.time.Duration;
 import java.util.concurrent.Callable;
-import lombok.Getter;
-import lombok.Setter;
+import javax.annotation.Nullable;
 
 /**
  * An API implementation for the <a href="https://www.blockchain.com/api">Blockchain Explorer API</a>.
  */
-public class BlockchainBTCExplorer implements BTCExplorer {
+public class BlockchainBTCExplorer extends BTCExplorer {
 
     private static final String API_BASE = "https://blockchain.info/";
     private static final String API_ADDRESS = API_BASE + "rawaddr/";
@@ -24,55 +23,34 @@ public class BlockchainBTCExplorer implements BTCExplorer {
      */
     public static final int MAX_TXS_PER_CALL = 50;
 
-    @Getter
-    @Setter
-    private RateLimitAvoider rateLimitAvoider;
-
     /**
      * Creates an instance with 5 seconds duration per call & 1 millisecond timeout, see {@link RateLimitAvoider} for more details.
      */
     public BlockchainBTCExplorer() {
-        this(new RateLimitAvoider(Duration.ofSeconds(5), Duration.ofMillis(1)));
+        this(new RateLimitAvoider(Duration.ofSeconds(5), Duration.ofSeconds(1)));
     }
 
     /**
      * Creates an instance with a custom {@link RateLimitAvoider}
      * @param rateLimitAvoider Provided {@link RateLimitAvoider}
      */
-    public BlockchainBTCExplorer(RateLimitAvoider rateLimitAvoider) {
-        this.rateLimitAvoider = rateLimitAvoider;
+    public BlockchainBTCExplorer(@Nullable RateLimitAvoider rateLimitAvoider) {
+        super(rateLimitAvoider);
     }
 
     /**
-     * Retrieves an address with all the transactions linked to it, ordered from latest to oldest.
-     * <pre><strong>Note:</strong> This method might take a very long time to return a result depending on how many transactions are associated with the provided address since it performs multiple API requests when there are more than {@link #MAX_TXS_PER_CALL} transactions. For an alternative see {@link #getAddress(String, int)}.</pre>
-     * @param address Bitcoin address.
-     * @return The requested {@link BTCAddress} object.
-     * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
+     * Refer to documentation at {@link BTCExplorer#getAddress(String)} and {@link BTCExplorer#getAddressWithCombinedTransactions(String, BTCAddress)}
      */
     @Override
-    public BTCAddress getAddress(String address) throws Exception {
-        BTCAddress btcAddress = getAddress(address, 0);
-        for (int offset = MAX_TXS_PER_CALL; offset < btcAddress.getTransactionsCount(); offset += MAX_TXS_PER_CALL) {
-            btcAddress.getTransactions().addAll(getAddress(address, offset).getTransactions());
+    protected BTCAddress getAddressWithCombinedTransactions(String address, BTCAddress existingAddress) throws Exception {
+        int offset = existingAddress == null ? 0 : existingAddress.getTransactions().size();
+        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "?limit=" + MAX_TXS_PER_CALL + "&offset=" + offset, BlockchainBTCAddress.class).getBody();
+        BTCAddress newAddress = rateLimitAvoider == null ? callable.call() : rateLimitAvoider.process(callable);
+        if (existingAddress == null) {
+            return newAddress;
         }
-        return btcAddress;
-    }
-
-    /**
-     * Retrieves an address with the <strong>latest {@link #MAX_TXS_PER_CALL} transactions</strong> linked to it <strong>starting from the desired offset</strong>.
-     * <pre><strong>Note:</strong> Transactions are ordered order from latest to oldest, using <strong>0 (zero)</strong> as an offset obtains the most recent {@link #MAX_TXS_PER_CALL} transactions.</pre>
-     * @param address Base58 or hash160 address.
-     * @param transactionsOffset The offset to begin obtaining transactions from
-     * @return The requested {@link BTCAddress} object.
-     * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
-     */
-    public BTCAddress getAddress(String address, int transactionsOffset) throws Exception {
-        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "?limit=" + MAX_TXS_PER_CALL + "&offset=" + transactionsOffset, BlockchainBTCAddress.class).getBody();
-        if (rateLimitAvoider == null) {
-            return callable.call();
-        }
-        return rateLimitAvoider.process(callable);
+        existingAddress.combineTransactions(newAddress);
+        return existingAddress;
     }
 
     /**

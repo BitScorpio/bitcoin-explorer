@@ -3,34 +3,29 @@ package com.scorpius.bitcoin.explorer;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.concurrent.Callable;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Regulates code execution to avoid rate-limits
  */
+@Slf4j
 public class RateLimitAvoider {
 
     /**
      * Used to ensure that only one threads is using the avoider.
      */
-    private final Lock lock;
+    private final ReentrantLock lock;
 
     /**
      * The duration between two consecutive calls.
      */
-    @Getter
-    @Setter
-    private Duration durationPerCall;
+    private final Duration durationPerCall;
 
     /**
      * The sleep duration before re-attempting a call when {@link #durationPerCall} is violated.
      */
-    @Getter
-    @Setter
-    private Duration timeout;
+    private final Duration timeout;
 
     /**
      * The last call instant.
@@ -52,6 +47,9 @@ public class RateLimitAvoider {
      * Checks if a request can be immediately processed without triggering a rate-limit.
      */
     public boolean canProcess() {
+        if (lock.isLocked() && !lock.isHeldByCurrentThread()) {
+            return false;
+        }
         return lastCallInstant.plus(durationPerCall).isBefore(Instant.now());
     }
 
@@ -63,17 +61,18 @@ public class RateLimitAvoider {
      * @throws Exception {@link InterruptedException} if the thread gets interrupted as well as any exceptions thrown inside the {@code callable} parameter.
      */
     public <T> T process(Callable<T> callable) throws Exception {
-        if (canProcess()) {
-            try {
-                lock.lockInterruptibly();
-                return callable.call();
-            } finally {
+        try {
+            lock.lockInterruptibly();
+            if (canProcess()) {
+                T result = callable.call();
                 lastCallInstant = Instant.now();
-                lock.unlock();
+                return result;
+            } else {
+                Thread.sleep(timeout.toMillis());
+                return process(callable);
             }
-        } else {
-            Thread.sleep(timeout.toMillis());
-            return process(callable);
+        } finally {
+            lock.unlock();
         }
     }
 }
