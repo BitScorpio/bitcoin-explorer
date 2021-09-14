@@ -6,7 +6,6 @@ import com.scorpius.bitcoin.explorer.BTCAddress;
 import com.scorpius.bitcoin.explorer.BTCExplorer;
 import com.scorpius.bitcoin.explorer.BTCTransaction;
 import dev.yasper.rump.Rump;
-import java.time.Duration;
 import java.util.concurrent.Callable;
 import javax.annotation.Nullable;
 
@@ -25,10 +24,10 @@ public class BlockchainBTCExplorer extends BTCExplorer {
     public static final int MAX_TXS_PER_CALL = 50;
 
     /**
-     * Creates an instance with 5 seconds duration per call & {@link Constants#DEFAULT_RETRY_SLEEP_DURATION}, see {@link RateLimitAvoider} for more details.
+     * Creates an instance with {@link Constants#BLOCKCHAIN_DURATION_PER_CALL} & {@link Constants#DEFAULT_RETRY_SLEEP_DURATION}, see {@link RateLimitAvoider} for more details.
      */
     public BlockchainBTCExplorer() {
-        this(new RateLimitAvoider(Duration.ofSeconds(5), Constants.DEFAULT_RETRY_SLEEP_DURATION));
+        this(new RateLimitAvoider(Constants.BLOCKCHAIN_DURATION_PER_CALL, Constants.DEFAULT_RETRY_SLEEP_DURATION));
     }
 
     /**
