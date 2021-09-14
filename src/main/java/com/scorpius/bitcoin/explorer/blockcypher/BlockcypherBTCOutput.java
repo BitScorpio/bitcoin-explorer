@@ -1,5 +1,6 @@
 package com.scorpius.bitcoin.explorer.blockcypher;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.scorpius.bitcoin.explorer.BTCOutput;
 import lombok.ToString;
@@ -7,13 +8,16 @@ import lombok.ToString;
 @ToString()
 public class BlockcypherBTCOutput extends BTCOutput {
 
-    @JsonProperty("addr")
+    @JsonAlias("addr")
+    @JsonProperty(required = true)
     private String address;
 
-    @JsonProperty("value")
+    @JsonAlias("value")
+    @JsonProperty(required = true)
     private long satoshis;
 
-    @JsonProperty("addresses")
+    @JsonAlias("addresses")
+    @JsonProperty(required = true)
     @SuppressWarnings("unused")
     private void unpackNested(Object[] addresses) {
         this.address = (String) addresses[0];

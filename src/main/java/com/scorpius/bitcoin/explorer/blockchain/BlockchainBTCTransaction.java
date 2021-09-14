@@ -1,5 +1,6 @@
 package com.scorpius.bitcoin.explorer.blockchain;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.scorpius.bitcoin.explorer.BTCInput;
 import com.scorpius.bitcoin.explorer.BTCOutput;
@@ -9,25 +10,32 @@ import lombok.ToString;
 @ToString()
 public class BlockchainBTCTransaction extends BTCTransaction {
 
-    @JsonProperty("hash")
+    @JsonAlias("hash")
+    @JsonProperty(required = true)
     private String hash;
 
-    @JsonProperty(value = "block_height")
+    @JsonAlias(value = "block_height")
+    @JsonProperty(required = true)
     private Long blockHeight;
 
-    @JsonProperty("fee")
+    @JsonAlias("fee")
+    @JsonProperty(required = true)
     private long fee;
 
-    @JsonProperty("vin_sz")
+    @JsonAlias("vin_sz")
+    @JsonProperty(required = true)
     private int inputsCount;
 
-    @JsonProperty("vout_sz")
+    @JsonAlias("vout_sz")
+    @JsonProperty(required = true)
     private int outputsCount;
 
-    @JsonProperty("inputs")
+    @JsonAlias("inputs")
+    @JsonProperty(required = true)
     private BlockchainBTCInput[] inputs;
 
-    @JsonProperty("out")
+    @JsonAlias("out")
+    @JsonProperty(required = true)
     private BlockchainBTCOutput[] outputs;
 
     @Override

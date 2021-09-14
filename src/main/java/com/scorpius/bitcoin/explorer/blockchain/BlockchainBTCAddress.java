@@ -1,5 +1,6 @@
 package com.scorpius.bitcoin.explorer.blockchain;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.scorpius.bitcoin.explorer.BTCAddress;
 import com.scorpius.bitcoin.explorer.BTCTransaction;
@@ -9,16 +10,20 @@ import lombok.ToString;
 @ToString
 public class BlockchainBTCAddress extends BTCAddress {
 
-    @JsonProperty("address")
+    @JsonAlias("address")
+    @JsonProperty(required = true)
     private String hash;
 
-    @JsonProperty("final_balance")
+    @JsonAlias("final_balance")
+    @JsonProperty(required = true)
     private long balance;
 
-    @JsonProperty("n_tx")
+    @JsonAlias("n_tx")
+    @JsonProperty(required = true)
     private long transactionsCount;
 
-    @JsonProperty("txs")
+    @JsonAlias("txs")
+    @JsonProperty(required = true)
     private List<BlockchainBTCTransaction> transactions;
 
     @Override

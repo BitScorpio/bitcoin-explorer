@@ -44,7 +44,11 @@ class BTCExplorerTest {
             for (String rawAddress : rawAddresses) {
                 try {
                     log.debug("[{}] [Address]-> {}", explorer.getClass().getSimpleName(), rawAddress);
-                    addresses.put(explorer, explorer.getAddress(rawAddress));
+                    BTCAddress address = explorer.getAddress(rawAddress);
+                    Assertions.assertEquals(rawAddress, address.getHash());
+                    Assertions.assertNotEquals(0, address.getTransactionsCount());
+                    Assertions.assertNotEquals(0, address.getTransactions().size());
+                    addresses.put(explorer, address);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);
@@ -101,7 +105,15 @@ class BTCExplorerTest {
             for (String rawTransaction : rawTransactions) {
                 try {
                     log.debug("[{}] [TX]-> {}", explorer.getClass().getSimpleName(), rawTransaction);
-                    transactions.put(explorer, explorer.getTransaction(rawTransaction));
+                    BTCTransaction transaction = explorer.getTransaction(rawTransaction);
+                    Assertions.assertEquals(rawTransaction, transaction.getHash());
+                    Assertions.assertNotEquals(0, transaction.getFee());
+                    Assertions.assertNotEquals(0, transaction.getBlockHeight());
+                    Assertions.assertNotEquals(0, transaction.getInputsCount());
+                    Assertions.assertNotEquals(0, transaction.getOutputsCount());
+                    Assertions.assertNotEquals(0, transaction.getInputs().length);
+                    Assertions.assertNotEquals(0, transaction.getOutputs().length);
+                    transactions.put(explorer, transaction);
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.exit(0);

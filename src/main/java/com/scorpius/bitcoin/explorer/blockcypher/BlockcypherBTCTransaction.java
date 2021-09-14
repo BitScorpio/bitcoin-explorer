@@ -1,5 +1,6 @@
 package com.scorpius.bitcoin.explorer.blockcypher;
 
+import com.fasterxml.jackson.annotation.JsonAlias;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.scorpius.bitcoin.explorer.BTCInput;
 import com.scorpius.bitcoin.explorer.BTCOutput;
@@ -9,25 +10,32 @@ import lombok.ToString;
 @ToString()
 public class BlockcypherBTCTransaction extends BTCTransaction {
 
-    @JsonProperty("hash")
+    @JsonAlias("hash")
+    @JsonProperty(required = true)
     private String hash;
 
-    @JsonProperty("block_height")
+    @JsonAlias("block_height")
+    @JsonProperty(required = true)
     private long blockHeight;
 
-    @JsonProperty("fees")
+    @JsonAlias("fees")
+    @JsonProperty(required = true)
     private long fee;
 
-    @JsonProperty("vin_sz")
+    @JsonAlias("vin_sz")
+    @JsonProperty(required = true)
     private int inputsCount;
 
-    @JsonProperty("vout_sz")
+    @JsonAlias("vout_sz")
+    @JsonProperty(required = true)
     private int outputsCount;
 
-    @JsonProperty("inputs")
+    @JsonAlias("inputs")
+    @JsonProperty(required = true)
     private BlockcypherBTCInput[] inputs;
 
-    @JsonProperty("outputs")
+    @JsonAlias("outputs")
+    @JsonProperty(required = true)
     private BlockcypherBTCOutput[] outputs;
 
     @Override
