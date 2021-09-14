@@ -13,7 +13,6 @@ import lombok.Setter;
 /**
  * An API implementation for the <a href="https://www.blockcypher.com/dev/bitcoin/">Blockciper API</a>.
  */
-// TODO: JavaDocs
 public class BlockcypherBTCExplorer implements BTCExplorer {
 
     private static final String BASE = "https://api.blockcypher.com/v1/btc/main/";
@@ -29,12 +28,21 @@ public class BlockcypherBTCExplorer implements BTCExplorer {
     @Setter
     private RateLimitAvoider rateLimitAvoider;
 
+    /**
+     * Creates an instance with 18 seconds duration per call & 1 millisecond timeout, see {@link RateLimitAvoider} for more details.
+     */
     public BlockcypherBTCExplorer() {
         this.rateLimitAvoider = new RateLimitAvoider(Duration.ofSeconds(18), Duration.ofMillis(1));
     }
 
+    /**
+     * Retrieves an address with all the transactions linked to it, ordered from latest to oldest.
+     * <pre><strong>Note:</strong> This method might take a very long time to return a result depending on how many transactions are associated with the provided address since it performs multiple API requests when there are more than {@link #MAX_TXS_PER_CALL} transactions. For an alternative see {@link #getAddress(String, long)}.</pre>
+     * @param address Bitcoin address.
+     * @return The requested {@link BTCAddress} object.
+     * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
+     */
     @Override
-    // TODO: Obtain all transactions
     public BTCAddress getAddress(String address) throws Exception {
         BTCAddress btcAddress = getAddress(address, -1);
         for (int offset = MAX_TXS_PER_CALL; offset < btcAddress.getTransactionsCount(); offset += MAX_TXS_PER_CALL) {
@@ -45,6 +53,13 @@ public class BlockcypherBTCExplorer implements BTCExplorer {
         return btcAddress;
     }
 
+    /**
+     * Retrieves an address with the <strong>latest {@link #MAX_TXS_PER_CALL} transactions</strong> linked to it <strong>before the desired block height</strong>.
+     * @param address Base58 or hash160 address.
+     * @param beforeBlockHeight The block height to begin obtaining transactions before
+     * @return The requested {@link BTCAddress} object.
+     * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
+     */
     public BTCAddress getAddress(String address, long beforeBlockHeight) throws Exception {
         String beforeParam = beforeBlockHeight >= 0 ? "&before=" + beforeBlockHeight : "";
         Callable<BTCAddress> callable = () -> Rump.get(SINGLE_ADDRESS + address + "/full?limit=" + MAX_TXS_PER_CALL + "&txlimit=1000000" + beforeParam, BlockcypherBTCAddress.class).getBody();
@@ -54,6 +69,12 @@ public class BlockcypherBTCExplorer implements BTCExplorer {
         return rateLimitAvoider.process(callable);
     }
 
+    /**
+     * Retrieves a transaction by its hash.
+     * @param hash Transaction hash.
+     * @return The requested {@link BTCTransaction} object.
+     * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
+     */
     @Override
     public BTCTransaction getTransaction(String hash) throws Exception {
         Callable<BTCTransaction> callable = () -> Rump.get(SINGLE_TRANSACTION + hash + "?limit=1000000", BlockcypherBTCTransaction.class).getBody();

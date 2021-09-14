@@ -37,8 +37,8 @@ public class BlockchainBTCExplorer implements BTCExplorer {
 
     /**
      * Retrieves an address with all the transactions linked to it, ordered from latest to oldest.
-     * <pre><strong>Note:</strong> This method might take a very long time to return a result depending on how many transactions are associated with the provided address since it performs multiple API requests when there are more than 50 transactions. For an alternative see {@link #getAddress(String, int)}.</pre>
-     * @param address Base58 or hash160 address.
+     * <pre><strong>Note:</strong> This method might take a very long time to return a result depending on how many transactions are associated with the provided address since it performs multiple API requests when there are more than {@link #MAX_TXS_PER_CALL} transactions. For an alternative see {@link #getAddress(String, int)}.</pre>
+     * @param address Bitcoin address.
      * @return The requested {@link BTCAddress} object.
      * @throws Exception {@link java.io.IOException} if the HTTP request fails as well as any exceptions thrown by {@link RateLimitAvoider#process(Callable)}.
      */
@@ -52,9 +52,8 @@ public class BlockchainBTCExplorer implements BTCExplorer {
     }
 
     /**
-     * Retrieves an address with the <strong>latest 50 transactions</strong> linked to it <strong>starting from the desired offset</strong>,
-     * see {@link BTCAddress} for specifics.
-     * <pre><strong>Note:</strong> Transactions are ordered order from latest to oldest, using <strong>0 (zero)</strong> as an offset obtains the most recent 50 transactions.</pre>
+     * Retrieves an address with the <strong>latest {@link #MAX_TXS_PER_CALL} transactions</strong> linked to it <strong>starting from the desired offset</strong>.
+     * <pre><strong>Note:</strong> Transactions are ordered order from latest to oldest, using <strong>0 (zero)</strong> as an offset obtains the most recent {@link #MAX_TXS_PER_CALL} transactions.</pre>
      * @param address Base58 or hash160 address.
      * @param transactionsOffset The offset to begin obtaining transactions from
      * @return The requested {@link BTCAddress} object.
