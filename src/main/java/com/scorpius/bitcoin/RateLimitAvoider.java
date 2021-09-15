@@ -27,10 +27,7 @@ public class RateLimitAvoider {
      */
     private final Duration retrySleepDuration;
 
-    /**
-     * The last call instant.
-     */
-    private Instant lastCallInstant;
+    private Instant lastCallTime;
 
     /**
      * Creates an instance that regulates code execution according to the given parameters.
@@ -41,7 +38,7 @@ public class RateLimitAvoider {
         this.lock = new ReentrantLock(true);
         this.durationPerCall = durationPerCall;
         this.retrySleepDuration = retrySleepDuration;
-        this.lastCallInstant = Instant.now().minus(durationPerCall);
+        this.lastCallTime = Instant.now().minus(durationPerCall);
     }
 
     /**
@@ -51,7 +48,7 @@ public class RateLimitAvoider {
         if (lock.isLocked() && !lock.isHeldByCurrentThread()) {
             return false;
         }
-        return lastCallInstant.plus(durationPerCall).isBefore(Instant.now());
+        return lastCallTime.plus(durationPerCall).isBefore(Instant.now());
     }
 
     /**
@@ -66,7 +63,7 @@ public class RateLimitAvoider {
             lock.lockInterruptibly();
             if (canProcess()) {
                 T result = callable.call();
-                lastCallInstant = Instant.now();
+                lastCallTime = Instant.now();
                 return result;
             } else {
                 Thread.sleep(retrySleepDuration.toMillis());
