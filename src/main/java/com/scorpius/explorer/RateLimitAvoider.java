@@ -1,4 +1,4 @@
-package com.scorpius.bitcoin;
+package com.scorpius.explorer;
 
 import java.time.Duration;
 import java.time.Instant;
