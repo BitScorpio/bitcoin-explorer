@@ -1,4 +1,4 @@
-package com.scorpius.explorer.bitcoin.record;
+package com.github.bitscorpio.bitcoin.record;
 
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;

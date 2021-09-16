@@ -1,4 +1,4 @@
-package com.scorpius.explorer.bitcoin.impl;
+package com.github.bitscorpio.bitcoin.impl;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -6,12 +6,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.scorpius.explorer.RateLimitAvoider;
-import com.scorpius.explorer.bitcoin.RateLimitedBTCExplorer;
-import com.scorpius.explorer.bitcoin.record.BTCAddress;
-import com.scorpius.explorer.bitcoin.record.BTCInput;
-import com.scorpius.explorer.bitcoin.record.BTCOutput;
-import com.scorpius.explorer.bitcoin.record.BTCTransaction;
+import com.github.bitscorpio.RateLimitAvoider;
+import com.github.bitscorpio.bitcoin.RateLimitedBTCExplorer;
+import com.github.bitscorpio.bitcoin.record.BTCAddress;
+import com.github.bitscorpio.bitcoin.record.BTCInput;
+import com.github.bitscorpio.bitcoin.record.BTCOutput;
+import com.github.bitscorpio.bitcoin.record.BTCTransaction;
 import dev.yasper.rump.Rump;
 import java.io.IOException;
 import java.time.Duration;

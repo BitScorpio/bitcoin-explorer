@@ -1,6 +1,6 @@
-package com.scorpius.explorer.bitcoin;
+package com.github.bitscorpio.bitcoin;
 
-import com.scorpius.explorer.bitcoin.record.BTCAddress;
+import com.github.bitscorpio.bitcoin.record.BTCAddress;
 
 /**
  * Obtains {@link BTCAddress} over multiple requests.

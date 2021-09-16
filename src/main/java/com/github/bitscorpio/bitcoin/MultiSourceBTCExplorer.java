@@ -1,9 +1,9 @@
-package com.scorpius.explorer.bitcoin;
+package com.github.bitscorpio.bitcoin;
 
-import com.scorpius.explorer.bitcoin.impl.BlockchainBTCExplorer;
-import com.scorpius.explorer.bitcoin.impl.BlockcypherBTCExplorer;
-import com.scorpius.explorer.bitcoin.record.BTCAddress;
-import com.scorpius.explorer.bitcoin.record.BTCTransaction;
+import com.github.bitscorpio.bitcoin.impl.BlockchainBTCExplorer;
+import com.github.bitscorpio.bitcoin.impl.BlockcypherBTCExplorer;
+import com.github.bitscorpio.bitcoin.record.BTCAddress;
+import com.github.bitscorpio.bitcoin.record.BTCTransaction;
 import java.time.Duration;
 import java.util.Objects;
 import net.jodah.failsafe.Failsafe;

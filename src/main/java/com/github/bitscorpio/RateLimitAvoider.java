@@ -1,4 +1,4 @@
-package com.scorpius.explorer;
+package com.github.bitscorpio;
 
 import java.time.Duration;
 import java.time.Instant;

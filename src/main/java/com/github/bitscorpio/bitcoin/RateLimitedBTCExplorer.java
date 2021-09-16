@@ -1,10 +1,10 @@
-package com.scorpius.explorer.bitcoin;
+package com.github.bitscorpio.bitcoin;
 
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import com.scorpius.explorer.RateLimitAvoider;
-import com.scorpius.explorer.bitcoin.record.BTCAddress;
-import com.scorpius.explorer.bitcoin.record.BTCRecordResponseTransformer;
-import com.scorpius.explorer.bitcoin.record.BTCTransaction;
+import com.github.bitscorpio.RateLimitAvoider;
+import com.github.bitscorpio.bitcoin.record.BTCAddress;
+import com.github.bitscorpio.bitcoin.record.BTCRecordResponseTransformer;
+import com.github.bitscorpio.bitcoin.record.BTCTransaction;
 import dev.yasper.rump.config.RequestConfig;
 import dev.yasper.rump.response.ResponseTransformer;
 import java.time.Duration;
