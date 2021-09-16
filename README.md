@@ -4,7 +4,7 @@ A bitcoin explorer library that utilizes multiple data sources at once.
 
 ## Prerequisites
 
-* [Java 15+](https://adoptium.net/)
+* [Java 17](https://www.oracle.com/java/technologies/downloads/)
 * [Maven](https://maven.apache.org/download.cgi)
 
 ## Features
@@ -41,14 +41,14 @@ It is also possible to customize the rate-limit avoidance behaviour by using our
 own `RateLimitAvoider` instance.
 
 ```java
-// Minimum duration between two API requests
-Duration durationPerCall = Duration.ofSeconds(5);
+// Minimum time duration between two API requests
+Duration timeBetweenCalls = Duration.ofSeconds(5);
 
 // Duration to sleep before checking if the minimum duration has passed
-Duration retrySleepDuration = Duration.ofMillis(200); 
+Duration retrySleepDuration = Duration.ofMillis(200);
 
 // Create our RateLimitAvoider instance
-RateLimitAvoider rateLimitAvoider = new RateLimitAvoider(durationPerCall, retrySleepDuration);
+RateLimitAvoider rateLimitAvoider = new RateLimitAvoider(timeBetweenCalls,retrySleepDuration);
 
 // Use the custom RateLimitAvoider in our preferred BTCExplorer and continue as usual
 BTCExplorer explorer = new BlockcypherBTCExplorer(rateLimitAvoider);
@@ -64,13 +64,21 @@ throttled by its own instance of `RateLimitAvoider` the other one gets used inst
 reducing the time required to wait in order to avoid getting rate-limited.
 
 ```java
-// The no-args constructor utilizes all available data sources
-BTCExplorer explorer = new MultiBTCExplorer();
+// Create a MultiBTCExplorer that utilizes all available data sources
+BTCExplorer explorer = MultiBTCExplorer.createDefault();
+```
 
-// The following operations will perform quicker than the previous examples
-BTCAddress address = explorer.getAddress("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa");
+```java
+// Create a MultiBTCExplorer that utilizes specific data sources (Using the varargs constructor)
+BTCExplorer explorer = new MultiSourceBTCExplorer(new BlockchainBTCExplorer(), new BlockcypherBTCExplorer());
+```
+
+Using the `MultiBTCExplorer` is simillar to the previous examples.
+
+```java
+// The following operations will get performed quicker
+address = explorer.getAddress("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa");
 BTCTransaction transaction = explorer.getTransaction("4a5e1e4baab89f3a32518a88c31bc87f618f76673e2cc77ab2127b7afdeda33b");
-
 ```
 
 ## Warning
@@ -103,8 +111,8 @@ However, the following code is <ins>**NOT SAFE**</ins> and will lead to getting 
 BTCExplorer blockchainBTCExplorer = new BlockchainBTCExplorer();
 BTCExplorer blockcypherBTCExplorer = new BlockcypherBTCExplorer();
 
-// The no-args constructor will create different instances than the ones we declared above
-BTCExplorer multiBTCExplorer = new MultiBTCExplorer();
+// This will internally create different instances than the ones we declared above
+BTCExplorer multiBTCExplorer = MultiBTCExplorer.createDefault();
 
 BTCAddress address1 = blockchainBTCExplorer.getAddress("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa");
 BTCAddress address2 = blockcypherBTCExplorer.getAddress("1A1zP1eP5QGefi2DMPTfTL5SLmv7DivfNa");
