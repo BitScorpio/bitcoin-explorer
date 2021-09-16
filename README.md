@@ -2,10 +2,23 @@
 
 A bitcoin explorer library that utilizes multiple data sources at once.
 
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/io.github.bitscorpio/bitcoin-explorer/badge.svg)](https://search.maven.org/artifact/io.github.bitscorpio/bitcoin-explorer/)
+[![Javadocs](http://www.javadoc.io/badge/io.github.bitscorpio/bitcoin-explorer.svg)](https://www.javadoc.io/doc/io.github.bitscorpio/)
+[![License](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+
+## Table of Contents
+
+1. [Prerequisites](#Prerequisites)
+2. [Features](#Features)
+3. [Install with Maven](#Install with Maven)
+4. [Supported Data Sources](#Supported Data Sources)
+5. [Usage](#Usage)
+6. [Warning](#Warning)
+
 ## Prerequisites
 
-* [Java 16](https://www.oracle.com/java/technologies/downloads/)
 * [Maven](https://maven.apache.org/download.cgi)
+* [Java 16+](https://www.oracle.com/java/technologies/downloads/)
 
 ## Features
 
@@ -13,6 +26,20 @@ A bitcoin explorer library that utilizes multiple data sources at once.
 - Rate-limit abidance.
 - Rate-limit mitigation.
 - Multiple data sources.
+
+## Install with Maven
+
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/io.github.bitscorpio/bitcoin-explorer/badge.svg)](https://search.maven.org/artifact/io.github.bitscorpio/bitcoin-explorer/)
+
+Replace `{version}` with the latest version indicated above.
+
+```xml
+<dependency>
+    <groupId>io.github.bitscorpio</groupId>
+    <artifactId>bitcoin-explorer</artifactId>
+    <version>{version}</version>
+</dependency>
+```
 
 ## Supported Data Sources
 
@@ -82,7 +109,6 @@ BTCTransaction transaction = explorer.getTransaction("4a5e1e4baab89f3a32518a88c3
 ```
 
 ## Warning
-
 Since every `BTCExplorer` instance has its own `RateLimitAvoider`, using multiple instances of the
 same implementation (Ex: `BlockchainBTCAddress`) will lead to getting rate-limited. Always make sure
 that only one instance of `BTCExplorer` being used across the application.
