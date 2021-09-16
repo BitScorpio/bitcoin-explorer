@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.scorpius.explorer.RateLimitAvoider;
 import com.scorpius.explorer.bitcoin.RateLimitedBTCExplorer;
 import com.scorpius.explorer.bitcoin.record.BTCAddress;
 import com.scorpius.explorer.bitcoin.record.BTCInput;
@@ -30,6 +31,14 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
 
     public BlockchainBTCExplorer() {
         super(Duration.ofSeconds(5));
+    }
+
+    public BlockchainBTCExplorer(Duration timeBetweenCalls) {
+        super(timeBetweenCalls);
+    }
+
+    public BlockchainBTCExplorer(RateLimitAvoider rateLimitAvoider) {
+        super(rateLimitAvoider);
     }
 
     @Override
