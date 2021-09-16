@@ -8,6 +8,24 @@
     <artifactId>bitcoin-explorer</artifactId>
     <version>1.0-alpha</version>
 
+    <name>${project.groupId}:${project.artifactId}</name>
+    <description>A bitcoin explorer library that utilizes multiple data sources at once.
+    </description>
+    <url>https://github.com/BitScorpio/bitcoin-explorer</url>
+
+    <developers>
+        <developer>
+            <name>Mohamed ElZaiat</name>
+        </developer>
+    </developers>
+
+    <scm>
+        <connection>scm:git:git://github.com/BitScorpio/bitcoin-explorer.git</connection>
+        <developerConnection>scm:git:ssh://github.com:BitScorpio/bitcoin-explorer.git
+        </developerConnection>
+        <url>https://github.com/BitScorpio/bitcoin-explorer</url>
+    </scm>
+
     <distributionManagement>
         <snapshotRepository>
             <id>ossrh</id>
