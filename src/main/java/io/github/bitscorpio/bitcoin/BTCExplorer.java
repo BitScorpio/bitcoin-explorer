@@ -1,7 +1,7 @@
-package com.github.bitscorpio.bitcoin;
+package io.github.bitscorpio.bitcoin;
 
-import com.github.bitscorpio.bitcoin.record.BTCAddress;
-import com.github.bitscorpio.bitcoin.record.BTCTransaction;
+import io.github.bitscorpio.bitcoin.record.BTCAddress;
+import io.github.bitscorpio.bitcoin.record.BTCTransaction;
 
 public interface BTCExplorer {
 

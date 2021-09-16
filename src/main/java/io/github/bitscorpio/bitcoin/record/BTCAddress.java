@@ -1,4 +1,4 @@
-package com.github.bitscorpio.bitcoin.record;
+package io.github.bitscorpio.bitcoin.record;
 
 import java.util.List;
 

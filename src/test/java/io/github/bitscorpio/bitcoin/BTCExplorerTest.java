@@ -1,13 +1,13 @@
-package com.github.bitscorpio.bitcoin;
+package io.github.bitscorpio.bitcoin;
 
-import com.github.bitscorpio.bitcoin.impl.BlockchainBTCExplorer;
-import com.github.bitscorpio.bitcoin.impl.BlockcypherBTCExplorer;
-import com.github.bitscorpio.bitcoin.record.BTCAddress;
-import com.github.bitscorpio.bitcoin.record.BTCInput;
-import com.github.bitscorpio.bitcoin.record.BTCOutput;
-import com.github.bitscorpio.bitcoin.record.BTCTransaction;
 import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
+import io.github.bitscorpio.bitcoin.impl.BlockchainBTCExplorer;
+import io.github.bitscorpio.bitcoin.impl.BlockcypherBTCExplorer;
+import io.github.bitscorpio.bitcoin.record.BTCAddress;
+import io.github.bitscorpio.bitcoin.record.BTCInput;
+import io.github.bitscorpio.bitcoin.record.BTCOutput;
+import io.github.bitscorpio.bitcoin.record.BTCTransaction;
 import java.util.List;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

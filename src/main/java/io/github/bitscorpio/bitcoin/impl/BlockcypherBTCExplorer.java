@@ -1,4 +1,4 @@
-package com.github.bitscorpio.bitcoin.impl;
+package io.github.bitscorpio.bitcoin.impl;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -6,13 +6,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.github.bitscorpio.RateLimitAvoider;
-import com.github.bitscorpio.bitcoin.RateLimitedBTCExplorer;
-import com.github.bitscorpio.bitcoin.record.BTCAddress;
-import com.github.bitscorpio.bitcoin.record.BTCInput;
-import com.github.bitscorpio.bitcoin.record.BTCOutput;
-import com.github.bitscorpio.bitcoin.record.BTCTransaction;
 import dev.yasper.rump.Rump;
+import io.github.bitscorpio.RateLimitAvoider;
+import io.github.bitscorpio.bitcoin.RateLimitedBTCExplorer;
+import io.github.bitscorpio.bitcoin.record.BTCAddress;
+import io.github.bitscorpio.bitcoin.record.BTCInput;
+import io.github.bitscorpio.bitcoin.record.BTCOutput;
+import io.github.bitscorpio.bitcoin.record.BTCTransaction;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
@@ -20,38 +20,42 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
- * An API implementation of the <a href="https://www.blockchain.com/api">Blockchain Explorer API</a>.
+ * An API implementation of the <a href="https://www.blockcypher.com/dev/bitcoin/">Blockciper API</a>.
  */
-public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
+public class BlockcypherBTCExplorer extends RateLimitedBTCExplorer {
 
-    private static final int MAX_TXS_PER_CALL = 50;
-    private static final String API_BASE = "https://blockchain.info/";
-    private static final String API_ADDRESS = API_BASE + "rawaddr/";
-    private static final String API_TRANSACTION = API_BASE + "rawtx/";
+    public static final int MAX_TXS_PER_CALL = 50;
+    private static final String API_BASE = "https://api.blockcypher.com/v1/btc/main/";
+    private static final String API_ADDRESS = API_BASE + "addrs/";
+    private static final String API_TRANSACTION = API_BASE + "txs/";
 
-    public BlockchainBTCExplorer() {
-        super(Duration.ofSeconds(5));
+    public BlockcypherBTCExplorer() {
+        super(Duration.ofSeconds(18));
     }
 
-    public BlockchainBTCExplorer(Duration timeBetweenCalls) {
+    public BlockcypherBTCExplorer(Duration timeBetweenCalls) {
         super(timeBetweenCalls);
     }
 
-    public BlockchainBTCExplorer(RateLimitAvoider rateLimitAvoider) {
+    public BlockcypherBTCExplorer(RateLimitAvoider rateLimitAvoider) {
         super(rateLimitAvoider);
     }
 
     @Override
     protected BTCAddress getAddressLatestTransactions(String address) throws Throwable {
-        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "?limit=" + MAX_TXS_PER_CALL, BTCAddress.class, requestConfig).getBody();
+        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "/full?limit=" + MAX_TXS_PER_CALL + "&txlimit=1000000", BTCAddress.class, requestConfig).getBody();
         return rateLimitAvoider == null ? callable.call() : rateLimitAvoider.process(callable);
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")
     protected BTCAddress getAddressNextTransactionsBatch(BTCAddress existingAddress) throws Throwable {
-        int offset = existingAddress == null ? 0 : existingAddress.transactions().size();
-        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + existingAddress.hash() + "?limit=" + MAX_TXS_PER_CALL + "&offset=" + offset, BTCAddress.class, requestConfig).getBody();
+        StringBuilder beforeParamBuilder = new StringBuilder();
+        if (existingAddress != null && !existingAddress.transactions().isEmpty()) {
+            List<BTCTransaction> transactions = existingAddress.transactions();
+            beforeParamBuilder.append("&before=").append(transactions.get(transactions.size() - 1).blockHeight());
+        }
+        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + existingAddress.hash() + "/full?limit=" + MAX_TXS_PER_CALL + "&txlimit=1000000" + beforeParamBuilder, BTCAddress.class, requestConfig).getBody();
         BTCAddress newAddress = rateLimitAvoider == null ? callable.call() : rateLimitAvoider.process(callable);
         if (existingAddress == null) {
             return newAddress;
@@ -62,7 +66,7 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
 
     @Override
     public BTCTransaction getTransaction(String hash) throws Throwable {
-        Callable<BTCTransaction> callable = () -> Rump.get(API_TRANSACTION + hash, BTCTransaction.class, requestConfig).getBody();
+        Callable<BTCTransaction> callable = () -> Rump.get(API_TRANSACTION + hash + "?limit=1000000", BTCTransaction.class, requestConfig).getBody();
         if (rateLimitAvoider == null) {
             return callable.call();
         }
@@ -87,8 +91,9 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
                         switch (fieldName) {
                             case "address" -> hash = parser.getValueAsString();
                             case "final_balance" -> balance = parser.getValueAsLong();
-                            case "n_tx" -> transactionsCount = parser.getValueAsLong();
-                            case "txs" -> transactions = parser.readValueAs(new TypeReference<List<BTCTransaction>>() {});
+                            case "final_n_tx" -> transactionsCount = parser.getValueAsLong();
+                            case "txs" -> transactions = parser.readValueAs(new TypeReference<List<BTCTransaction>>() {
+                            });
                         }
                     }
                 }
@@ -102,12 +107,12 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
     protected JsonDeserializer<BTCTransaction> createTransactionDeserializer() {
         return new JsonDeserializer<>() {
             @Override
-            public BTCTransaction deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
-                JsonNode rootNode = parser.getCodec().readTree(parser);
+            public BTCTransaction deserialize(JsonParser jp, DeserializationContext ctx) throws IOException {
+                JsonNode rootNode = jp.getCodec().readTree(jp);
 
                 String hash = rootNode.get("hash").asText();
                 long blockHeight = rootNode.get("block_height").asLong();
-                long fee = rootNode.get("fee").asLong();
+                long fee = rootNode.get("fees").asLong();
                 int inputsCount = rootNode.get("vin_sz").asInt();
                 int outputsCount = rootNode.get("vout_sz").asInt();
 
@@ -115,18 +120,18 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
                 List<BTCInput> inputs = new ArrayList<>();
 
                 for (int i = 0; i < inputsNode.size(); i++) {
-                    JsonNode inputNode = inputsNode.get(i).get("prev_out");
-                    String address = inputNode.get("addr").asText();
-                    long satoshis = inputNode.get("value").asLong();
+                    JsonNode inputNode = inputsNode.get(i);
+                    String address = inputNode.get("addresses").get(0).asText();
+                    long satoshis = inputNode.get("output_value").asLong();
                     inputs.add(new BTCInput(address, satoshis));
                 }
 
-                JsonNode outputsNode = rootNode.get("out");
+                JsonNode outputsNode = rootNode.get("outputs");
                 List<BTCOutput> outputs = new ArrayList<>();
 
                 for (int i = 0; i < outputsNode.size(); i++) {
                     JsonNode outputNode = outputsNode.get(i);
-                    String address = outputNode.get("addr").asText();
+                    String address = outputNode.get("addresses").get(0).asText();
                     long satoshis = outputNode.get("value").asLong();
                     outputs.add(new BTCOutput(address, satoshis));
                 }
