@@ -2,30 +2,20 @@ package com.scorpius.explorer;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.util.Objects;
 import java.util.concurrent.Callable;
 import java.util.concurrent.locks.ReentrantLock;
-import lombok.extern.slf4j.Slf4j;
+import net.jodah.failsafe.Failsafe;
+import net.jodah.failsafe.RetryPolicy;
 
 /**
  * Regulates code execution to avoid rate-limits
  */
-@Slf4j
 public class RateLimitAvoider {
 
-    /**
-     * Used to ensure that only one threads is using the avoider.
-     */
     private final ReentrantLock lock;
-
-    /**
-     * The duration between two consecutive calls.
-     */
     private final Duration durationPerCall;
-
-    /**
-     * The sleep duration before re-attempting a call when {@link #durationPerCall} is violated.
-     */
-    private final Duration retrySleepDuration;
+    private final RetryPolicy<Object> retryPolicy;
 
     private Instant lastCallTime;
 
@@ -37,7 +27,11 @@ public class RateLimitAvoider {
     public RateLimitAvoider(Duration durationPerCall, Duration retrySleepDuration) {
         this.lock = new ReentrantLock(true);
         this.durationPerCall = durationPerCall;
-        this.retrySleepDuration = retrySleepDuration;
+        this.retryPolicy = new RetryPolicy<>().handleResult(null)
+                                              .withMaxRetries(-1)
+                                              .abortOn(Objects::nonNull)
+                                              .withDelay(retrySleepDuration);
+
         this.lastCallTime = Instant.now().minus(durationPerCall);
     }
 
@@ -61,14 +55,9 @@ public class RateLimitAvoider {
     public <T> T process(Callable<T> callable) throws Exception {
         try {
             lock.lockInterruptibly();
-            if (canProcess()) {
-                T result = callable.call();
-                lastCallTime = Instant.now();
-                return result;
-            } else {
-                Thread.sleep(retrySleepDuration.toMillis());
-                return process(callable);
-            }
+            T result = Failsafe.with(retryPolicy).get(() -> canProcess() ? callable.call() : null);
+            lastCallTime = Instant.now();
+            return result;
         } finally {
             lock.unlock();
         }

@@ -9,13 +9,14 @@ import com.scorpius.explorer.bitcoin.record.BTCInput;
 import com.scorpius.explorer.bitcoin.record.BTCOutput;
 import com.scorpius.explorer.bitcoin.record.BTCTransaction;
 import java.util.List;
-import lombok.SneakyThrows;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 class BTCExplorerTest {
+
+    private final Logger log = LoggerFactory.getLogger(getClass());
 
     private final List<BTCExplorer> explorers;
 
@@ -39,7 +40,6 @@ class BTCExplorerTest {
     }
 
     @Test
-    @SneakyThrows
     void getAddress() {
         // Load addresses using all explorers
         Multimap<BTCExplorer, BTCAddress> addresses = ArrayListMultimap.create();
@@ -115,7 +115,6 @@ class BTCExplorerTest {
     }
 
     @Test
-    @SneakyThrows
     void getTransaction() {
         // Load transactions using all explorers
         Multimap<BTCExplorer, BTCTransaction> transactions = ArrayListMultimap.create();
