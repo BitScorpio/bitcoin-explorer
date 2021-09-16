@@ -9,15 +9,18 @@ import dev.yasper.rump.config.RequestConfig;
 import dev.yasper.rump.response.ResponseTransformer;
 import java.time.Duration;
 
+/**
+ * Obtains {@link BTCAddress} over multiple requests while honoring enforced rate-limits.
+ */
 public abstract class RateLimitedBTCExplorer extends MultiRequestBTCExplorer {
 
     protected final RequestConfig requestConfig;
     protected final RateLimitAvoider rateLimitAvoider;
 
-    public RateLimitedBTCExplorer(Duration durationPerCall) {
+    public RateLimitedBTCExplorer(Duration timeBetweenCalls) {
         ResponseTransformer responseTransformer = new BTCRecordResponseTransformer(createAddressDeserializer(), createTransactionDeserializer());
         this.requestConfig = new RequestConfig().setResponseTransformer(responseTransformer);
-        this.rateLimitAvoider = new RateLimitAvoider(durationPerCall, Duration.ofMillis(200));
+        this.rateLimitAvoider = new RateLimitAvoider(timeBetweenCalls, Duration.ofMillis(200));
     }
 
     public final RateLimitAvoider getRateLimitAvoider() {

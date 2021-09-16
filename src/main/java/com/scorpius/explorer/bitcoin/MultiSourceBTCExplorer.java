@@ -4,7 +4,6 @@ import com.scorpius.explorer.bitcoin.record.BTCAddress;
 import com.scorpius.explorer.bitcoin.record.BTCTransaction;
 import java.time.Duration;
 import java.util.Objects;
-import javax.annotation.Nullable;
 import net.jodah.failsafe.Failsafe;
 import net.jodah.failsafe.RetryPolicy;
 
@@ -22,11 +21,11 @@ public class MultiSourceBTCExplorer extends MultiRequestBTCExplorer {
     }
 
     @Override
-    public BTCAddress getAddressCombineTransactions(String address, @Nullable BTCAddress existingAddress) {
+    protected BTCAddress getAddressLatestTransactions(String address) {
         return Failsafe.with(retryPolicy).get(() -> {
             for (RateLimitedBTCExplorer explorer : explorers) {
                 if (explorer.getRateLimitAvoider() == null || explorer.getRateLimitAvoider().canProcess()) {
-                    return explorer.getAddressCombineTransactions(address, existingAddress);
+                    return explorer.getAddressLatestTransactions(address);
                 }
             }
             return null;
@@ -34,7 +33,21 @@ public class MultiSourceBTCExplorer extends MultiRequestBTCExplorer {
     }
 
     @Override
-    public BTCTransaction getTransaction(String hash) {
+    @SuppressWarnings("RedundantThrows")
+    protected BTCAddress getAddressNextTransactionsBatch(BTCAddress existingAddress) throws Exception {
+        return Failsafe.with(retryPolicy).get(() -> {
+            for (RateLimitedBTCExplorer explorer : explorers) {
+                if (explorer.getRateLimitAvoider() == null || explorer.getRateLimitAvoider().canProcess()) {
+                    return explorer.getAddressNextTransactionsBatch(existingAddress);
+                }
+            }
+            return null;
+        });
+    }
+
+    @Override
+    @SuppressWarnings("RedundantThrows")
+    public BTCTransaction getTransaction(String hash) throws Exception {
         return Failsafe.with(retryPolicy).get(() -> {
             for (RateLimitedBTCExplorer explorer : explorers) {
                 if (explorer.getRateLimitAvoider() == null || explorer.getRateLimitAvoider().canProcess()) {

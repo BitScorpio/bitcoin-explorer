@@ -1,18 +1,36 @@
 package com.scorpius.explorer.bitcoin;
 
 import com.scorpius.explorer.bitcoin.record.BTCAddress;
-import javax.annotation.Nullable;
 
+/**
+ * Obtains {@link BTCAddress} over multiple requests.
+ */
 public abstract class MultiRequestBTCExplorer implements BTCExplorer {
 
+    /**
+     * Refer to {@link BTCExplorer#getAddress(String)}
+     */
     @Override
     public final BTCAddress getAddress(String address) throws Exception {
-        BTCAddress btcAddress = null;
-        do {
-            btcAddress = getAddressCombineTransactions(address, btcAddress);
-        } while (btcAddress.transactions().size() < btcAddress.transactionsCount());
+        BTCAddress btcAddress = getAddressLatestTransactions(address);
+        while (btcAddress.transactions().size() < btcAddress.transactionsCount()) {
+            btcAddress = getAddressNextTransactionsBatch(btcAddress);
+        }
         return btcAddress;
     }
 
-    protected abstract BTCAddress getAddressCombineTransactions(String address, @Nullable BTCAddress existingAddress) throws Exception;
+    /**
+     * Retrieves a {@link BTCAddress} with the latest transactions which usually does not include the full transactions list.
+     * @param address Bitcoin address.
+     * @return {@link BTCAddress}
+     */
+    protected abstract BTCAddress getAddressLatestTransactions(String address) throws Exception;
+
+    /**
+     * Adds the next batch of missing transactions to an existing {@link BTCAddress}.
+     * @param existingAddress A previously obtained {@link BTCAddress} to use for deciding which transactions batch should be requested.
+     * @return {@link BTCAddress} with more transactions added to it.
+     * @throws Exception Any exception thrown during the process.
+     */
+    protected abstract BTCAddress getAddressNextTransactionsBatch(BTCAddress existingAddress) throws Exception;
 }

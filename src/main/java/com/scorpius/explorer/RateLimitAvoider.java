@@ -14,25 +14,25 @@ import net.jodah.failsafe.RetryPolicy;
 public class RateLimitAvoider {
 
     private final ReentrantLock lock;
-    private final Duration durationPerCall;
+    private final Duration timeBetweenCalls;
     private final RetryPolicy<Object> retryPolicy;
 
     private Instant lastCallTime;
 
     /**
      * Creates an instance that regulates code execution according to the given parameters.
-     * @param durationPerCall The allowed duration between two consecutive calls
-     * @param retrySleepDuration The sleep duration before re-attempting a call when {@link #durationPerCall} is violated.
+     * @param timeBetweenCalls The allowed time duration between two consecutive calls
+     * @param retrySleepDuration The sleep duration before re-attempting a call when {@link #timeBetweenCalls} is violated.
      */
-    public RateLimitAvoider(Duration durationPerCall, Duration retrySleepDuration) {
+    public RateLimitAvoider(Duration timeBetweenCalls, Duration retrySleepDuration) {
         this.lock = new ReentrantLock(true);
-        this.durationPerCall = durationPerCall;
+        this.timeBetweenCalls = timeBetweenCalls;
         this.retryPolicy = new RetryPolicy<>().handleResult(null)
                                               .withMaxRetries(-1)
                                               .abortOn(Objects::nonNull)
                                               .withDelay(retrySleepDuration);
 
-        this.lastCallTime = Instant.now().minus(durationPerCall);
+        this.lastCallTime = Instant.now().minus(timeBetweenCalls);
     }
 
     /**
@@ -42,7 +42,7 @@ public class RateLimitAvoider {
         if (lock.isLocked() && !lock.isHeldByCurrentThread()) {
             return false;
         }
-        return lastCallTime.plus(durationPerCall).isBefore(Instant.now());
+        return lastCallTime.plus(timeBetweenCalls).isBefore(Instant.now());
     }
 
     /**

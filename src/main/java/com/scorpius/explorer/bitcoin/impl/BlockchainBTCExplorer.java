@@ -33,9 +33,16 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
     }
 
     @Override
-    public BTCAddress getAddressCombineTransactions(String address, BTCAddress existingAddress) throws Exception {
+    protected BTCAddress getAddressLatestTransactions(String address) throws Exception {
+        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "?limit=" + MAX_TXS_PER_CALL, BTCAddress.class, requestConfig).getBody();
+        return rateLimitAvoider == null ? callable.call() : rateLimitAvoider.process(callable);
+    }
+
+    @Override
+    @SuppressWarnings("ConstantConditions")
+    protected BTCAddress getAddressNextTransactionsBatch(BTCAddress existingAddress) throws Exception {
         int offset = existingAddress == null ? 0 : existingAddress.transactions().size();
-        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "?limit=" + MAX_TXS_PER_CALL + "&offset=" + offset, BTCAddress.class, requestConfig).getBody();
+        Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + existingAddress.hash() + "?limit=" + MAX_TXS_PER_CALL + "&offset=" + offset, BTCAddress.class, requestConfig).getBody();
         BTCAddress newAddress = rateLimitAvoider == null ? callable.call() : rateLimitAvoider.process(callable);
         if (existingAddress == null) {
             return newAddress;
