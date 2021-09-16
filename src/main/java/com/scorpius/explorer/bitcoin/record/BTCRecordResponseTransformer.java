@@ -7,6 +7,9 @@ import dev.yasper.rump.response.ResponseTransformer;
 import java.io.IOException;
 import java.io.InputStream;
 
+/**
+ * Used by <a href="https://github.com/Jasper-ketelaar/Rump">Rump</a> to deserialize JSON objects.
+ */
 public class BTCRecordResponseTransformer implements ResponseTransformer {
 
     private final ObjectMapper objectMapper;

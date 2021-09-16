@@ -18,6 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
+/**
+ * An API implementation of the <a href="https://www.blockcypher.com/dev/bitcoin/">Blockciper API</a>.
+ */
 public class BlockcypherBTCExplorer extends RateLimitedBTCExplorer {
 
     public static final int MAX_TXS_PER_CALL = 50;

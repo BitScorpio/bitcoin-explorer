@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.concurrent.Callable;
 
 /**
- * An API implementation for the <a href="https://www.blockchain.com/api">Blockchain Explorer API</a>.
+ * An API implementation of the <a href="https://www.blockchain.com/api">Blockchain Explorer API</a>.
  */
 public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
 

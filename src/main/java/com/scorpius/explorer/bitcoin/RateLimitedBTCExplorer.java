@@ -14,7 +14,11 @@ import java.time.Duration;
  */
 public abstract class RateLimitedBTCExplorer extends MultiRequestBTCExplorer {
 
+    /**
+     * Used by <a href="https://github.com/Jasper-ketelaar/Rump">Rump</a> to deserialize JSON objects.
+     */
     protected final RequestConfig requestConfig;
+
     protected final RateLimitAvoider rateLimitAvoider;
 
     public RateLimitedBTCExplorer(Duration timeBetweenCalls) {
