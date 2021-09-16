@@ -6,8 +6,15 @@ public record BTCAddress(String hash, long balance, long transactionsCount, List
 
     public void combineTransactions(BTCAddress address) {
         if (!hash().equals(address.hash())) {
-            throw new RuntimeException("Address hashes do not match");
+            throw new AddressDoesNotMatchException(hash, address.hash());
         }
         transactions().addAll(address.transactions());
+    }
+
+    public static final class AddressDoesNotMatchException extends RuntimeException {
+
+        private AddressDoesNotMatchException(String expected, String actual) {
+            super("Expected: " + expected + " but found " + actual);
+        }
     }
 }

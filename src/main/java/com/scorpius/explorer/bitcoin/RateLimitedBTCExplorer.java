@@ -21,11 +21,11 @@ public abstract class RateLimitedBTCExplorer extends MultiRequestBTCExplorer {
 
     protected final RateLimitAvoider rateLimitAvoider;
 
-    public RateLimitedBTCExplorer(Duration timeBetweenCalls) {
+    protected RateLimitedBTCExplorer(Duration timeBetweenCalls) {
         this(new RateLimitAvoider(timeBetweenCalls, Duration.ofMillis(200)));
     }
 
-    public RateLimitedBTCExplorer(RateLimitAvoider rateLimitAvoider) {
+    protected RateLimitedBTCExplorer(RateLimitAvoider rateLimitAvoider) {
         ResponseTransformer responseTransformer = new BTCRecordResponseTransformer(createAddressDeserializer(), createTransactionDeserializer());
         this.requestConfig = new RequestConfig().setResponseTransformer(responseTransformer);
         this.rateLimitAvoider = rateLimitAvoider;

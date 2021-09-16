@@ -58,7 +58,7 @@ class BTCExplorerTest {
                     Assertions.assertNotEquals(0, address.transactions().size());
 
                     addresses.put(explorer, address);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                     System.exit(0);
                 }
@@ -131,7 +131,7 @@ class BTCExplorerTest {
                     Assertions.assertNotEquals(0, transaction.inputs().size());
                     Assertions.assertNotEquals(0, transaction.outputs().size());
                     transactions.put(explorer, transaction);
-                } catch (Exception e) {
+                } catch (Throwable e) {
                     e.printStackTrace();
                     System.exit(0);
                 }

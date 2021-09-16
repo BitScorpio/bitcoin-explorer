@@ -42,16 +42,16 @@ public class BlockcypherBTCExplorer extends RateLimitedBTCExplorer {
     }
 
     @Override
-    protected BTCAddress getAddressLatestTransactions(String address) throws Exception {
+    protected BTCAddress getAddressLatestTransactions(String address) throws Throwable {
         Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "/full?limit=" + MAX_TXS_PER_CALL + "&txlimit=1000000", BTCAddress.class, requestConfig).getBody();
         return rateLimitAvoider == null ? callable.call() : rateLimitAvoider.process(callable);
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    protected BTCAddress getAddressNextTransactionsBatch(BTCAddress existingAddress) throws Exception {
+    protected BTCAddress getAddressNextTransactionsBatch(BTCAddress existingAddress) throws Throwable {
         StringBuilder beforeParamBuilder = new StringBuilder();
-        if (existingAddress != null && existingAddress.transactions().size() > 0) {
+        if (existingAddress != null && !existingAddress.transactions().isEmpty()) {
             List<BTCTransaction> transactions = existingAddress.transactions();
             beforeParamBuilder.append("&before=").append(transactions.get(transactions.size() - 1).blockHeight());
         }
@@ -65,7 +65,7 @@ public class BlockcypherBTCExplorer extends RateLimitedBTCExplorer {
     }
 
     @Override
-    public BTCTransaction getTransaction(String hash) throws Exception {
+    public BTCTransaction getTransaction(String hash) throws Throwable {
         Callable<BTCTransaction> callable = () -> Rump.get(API_TRANSACTION + hash + "?limit=1000000", BTCTransaction.class, requestConfig).getBody();
         if (rateLimitAvoider == null) {
             return callable.call();

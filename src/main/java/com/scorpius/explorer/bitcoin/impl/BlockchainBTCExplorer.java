@@ -42,14 +42,14 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
     }
 
     @Override
-    protected BTCAddress getAddressLatestTransactions(String address) throws Exception {
+    protected BTCAddress getAddressLatestTransactions(String address) throws Throwable {
         Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + address + "?limit=" + MAX_TXS_PER_CALL, BTCAddress.class, requestConfig).getBody();
         return rateLimitAvoider == null ? callable.call() : rateLimitAvoider.process(callable);
     }
 
     @Override
     @SuppressWarnings("ConstantConditions")
-    protected BTCAddress getAddressNextTransactionsBatch(BTCAddress existingAddress) throws Exception {
+    protected BTCAddress getAddressNextTransactionsBatch(BTCAddress existingAddress) throws Throwable {
         int offset = existingAddress == null ? 0 : existingAddress.transactions().size();
         Callable<BTCAddress> callable = () -> Rump.get(API_ADDRESS + existingAddress.hash() + "?limit=" + MAX_TXS_PER_CALL + "&offset=" + offset, BTCAddress.class, requestConfig).getBody();
         BTCAddress newAddress = rateLimitAvoider == null ? callable.call() : rateLimitAvoider.process(callable);
@@ -61,7 +61,7 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
     }
 
     @Override
-    public BTCTransaction getTransaction(String hash) throws Exception {
+    public BTCTransaction getTransaction(String hash) throws Throwable {
         Callable<BTCTransaction> callable = () -> Rump.get(API_TRANSACTION + hash, BTCTransaction.class, requestConfig).getBody();
         if (rateLimitAvoider == null) {
             return callable.call();
@@ -88,8 +88,7 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
                             case "address" -> hash = parser.getValueAsString();
                             case "final_balance" -> balance = parser.getValueAsLong();
                             case "n_tx" -> transactionsCount = parser.getValueAsLong();
-                            case "txs" -> transactions = parser.readValueAs(new TypeReference<List<BTCTransaction>>() {
-                            });
+                            case "txs" -> transactions = parser.readValueAs(new TypeReference<List<BTCTransaction>>() {});
                         }
                     }
                 }

@@ -50,9 +50,9 @@ public class RateLimitAvoider {
      * @param callable The {@link Callable} that should be used to return a value.
      * @param <T> Type parameter of the {@code callable} parameter.
      * @return Object returned by the {@code callable} parameter.
-     * @throws Exception {@link InterruptedException} if the thread gets interrupted as well as any exceptions thrown inside the {@code callable} parameter.
+     * @throws Throwable {@link InterruptedException} if the thread gets interrupted as well as any exceptions thrown inside the {@code callable} parameter.
      */
-    public <T> T process(Callable<T> callable) throws Exception {
+    public <T> T process(Callable<T> callable) throws Throwable {
         try {
             lock.lockInterruptibly();
             T result = Failsafe.with(retryPolicy).get(() -> canProcess() ? callable.call() : null);
