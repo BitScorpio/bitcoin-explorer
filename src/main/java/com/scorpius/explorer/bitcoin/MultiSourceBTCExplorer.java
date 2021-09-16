@@ -1,5 +1,7 @@
 package com.scorpius.explorer.bitcoin;
 
+import com.scorpius.explorer.bitcoin.impl.BlockchainBTCExplorer;
+import com.scorpius.explorer.bitcoin.impl.BlockcypherBTCExplorer;
 import com.scorpius.explorer.bitcoin.record.BTCAddress;
 import com.scorpius.explorer.bitcoin.record.BTCTransaction;
 import java.time.Duration;
@@ -11,6 +13,10 @@ public class MultiSourceBTCExplorer extends MultiRequestBTCExplorer {
 
     private final RateLimitedBTCExplorer[] explorers;
     private final RetryPolicy<Object> retryPolicy;
+
+    public static MultiSourceBTCExplorer createDefault() {
+        return new MultiSourceBTCExplorer(new BlockchainBTCExplorer(), new BlockcypherBTCExplorer());
+    }
 
     public MultiSourceBTCExplorer(RateLimitedBTCExplorer... rateLimitedBTCExplorers) {
         this.explorers = rateLimitedBTCExplorers;
