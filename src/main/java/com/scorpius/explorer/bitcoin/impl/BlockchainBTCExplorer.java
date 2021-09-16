@@ -1,14 +1,18 @@
 package com.scorpius.explorer.bitcoin.impl;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.scorpius.explorer.bitcoin.RateLimitedBTCExplorer;
-import com.scorpius.explorer.bitcoin.deserializer.BTCAddressDeserializer;
-import com.scorpius.explorer.bitcoin.deserializer.BTCTransactionDeserializer;
 import com.scorpius.explorer.bitcoin.record.BTCAddress;
 import com.scorpius.explorer.bitcoin.record.BTCInput;
 import com.scorpius.explorer.bitcoin.record.BTCOutput;
 import com.scorpius.explorer.bitcoin.record.BTCTransaction;
 import dev.yasper.rump.Rump;
+import java.io.IOException;
 import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,7 +29,7 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
     private static final String API_TRANSACTION = API_BASE + "rawtx/";
 
     public BlockchainBTCExplorer() {
-        super(Duration.ofSeconds(5), new AddressDeserializer(), new TransactionDeserializer());
+        super(Duration.ofSeconds(5));
     }
 
     @Override
@@ -49,60 +53,71 @@ public class BlockchainBTCExplorer extends RateLimitedBTCExplorer {
         return rateLimitAvoider.process(callable);
     }
 
-    private static class AddressDeserializer extends BTCAddressDeserializer {
+    @Override
+    protected JsonDeserializer<BTCAddress> createAddressDeserializer() {
+        return new JsonDeserializer<>() {
+            @Override
+            public BTCAddress deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
+                String hash = null;
+                long balance = -1;
+                long transactionsCount = -1;
+                List<BTCTransaction> transactions = null;
 
-        protected AddressDeserializer() {
-            super(new TransactionDeserializer());
-        }
+                while (!parser.isClosed()) {
+                    JsonToken token = parser.nextToken();
+                    if (token == JsonToken.FIELD_NAME) {
+                        String fieldName = parser.getCurrentName();
+                        parser.nextToken();
+                        switch (fieldName) {
+                            case "address" -> hash = parser.getValueAsString();
+                            case "final_balance" -> balance = parser.getValueAsLong();
+                            case "n_tx" -> transactionsCount = parser.getValueAsLong();
+                            case "txs" -> transactions = parser.readValueAs(new TypeReference<List<BTCTransaction>>() {
+                            });
+                        }
+                    }
+                }
 
-        @Override
-        public BTCAddress deserialize(JsonNode rootNode) {
-            String hash = rootNode.get("address").asText();
-            long balance = rootNode.get("final_balance").asLong();
-            long transactionsCount = rootNode.get("n_tx").asLong();
-
-            @SuppressWarnings("DuplicatedCode")
-            JsonNode transactionsNode = rootNode.get("txs");
-            List<BTCTransaction> transactions = new ArrayList<>();
-            for (JsonNode transactionNode : transactionsNode) {
-                transactions.add(transactionDeserializer.deserialize(transactionNode));
+                return new BTCAddress(hash, balance, transactionsCount, transactions);
             }
-
-            return new BTCAddress(hash, balance, transactionsCount, transactions);
-        }
+        };
     }
 
-    private static class TransactionDeserializer extends BTCTransactionDeserializer {
+    @Override
+    protected JsonDeserializer<BTCTransaction> createTransactionDeserializer() {
+        return new JsonDeserializer<>() {
+            @Override
+            public BTCTransaction deserialize(JsonParser parser, DeserializationContext ctx) throws IOException {
+                JsonNode rootNode = parser.getCodec().readTree(parser);
 
-        @Override
-        public BTCTransaction deserialize(JsonNode rootNode) {
-            String hash = rootNode.get("hash").asText();
-            long blockHeight = rootNode.get("block_height").asLong();
-            long fee = rootNode.get("fee").asLong();
-            int inputsCount = rootNode.get("vin_sz").asInt();
-            int outputsCount = rootNode.get("vout_sz").asInt();
+                String hash = rootNode.get("hash").asText();
+                long blockHeight = rootNode.get("block_height").asLong();
+                long fee = rootNode.get("fee").asLong();
+                int inputsCount = rootNode.get("vin_sz").asInt();
+                int outputsCount = rootNode.get("vout_sz").asInt();
 
-            JsonNode inputsNode = rootNode.get("inputs");
-            List<BTCInput> inputs = new ArrayList<>();
+                JsonNode inputsNode = rootNode.get("inputs");
+                List<BTCInput> inputs = new ArrayList<>();
 
-            for (int i = 0; i < inputsNode.size(); i++) {
-                JsonNode inputNode = inputsNode.get(i).get("prev_out");
-                String address = inputNode.get("addr").asText();
-                long satoshis = inputNode.get("value").asLong();
-                inputs.add(new BTCInput(address, satoshis));
+                for (int i = 0; i < inputsNode.size(); i++) {
+                    JsonNode inputNode = inputsNode.get(i).get("prev_out");
+                    String address = inputNode.get("addr").asText();
+                    long satoshis = inputNode.get("value").asLong();
+                    inputs.add(new BTCInput(address, satoshis));
+                }
+
+                JsonNode outputsNode = rootNode.get("out");
+                List<BTCOutput> outputs = new ArrayList<>();
+
+                for (int i = 0; i < outputsNode.size(); i++) {
+                    JsonNode outputNode = outputsNode.get(i);
+                    String address = outputNode.get("addr").asText();
+                    long satoshis = outputNode.get("value").asLong();
+                    outputs.add(new BTCOutput(address, satoshis));
+                }
+
+                return new BTCTransaction(hash, blockHeight, fee, inputsCount, outputsCount, inputs, outputs);
             }
-
-            JsonNode outputsNode = rootNode.get("out");
-            List<BTCOutput> outputs = new ArrayList<>();
-
-            for (int i = 0; i < outputsNode.size(); i++) {
-                JsonNode outputNode = outputsNode.get(i);
-                String address = outputNode.get("addr").asText();
-                long satoshis = outputNode.get("value").asLong();
-                outputs.add(new BTCOutput(address, satoshis));
-            }
-
-            return new BTCTransaction(hash, blockHeight, fee, inputsCount, outputsCount, inputs, outputs);
-        }
+        };
     }
 }

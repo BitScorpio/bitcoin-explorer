@@ -1,16 +1,14 @@
-package com.scorpius.explorer.bitcoin.impl;
+package com.scorpius.explorer.bitcoin;
 
-import com.scorpius.explorer.bitcoin.MultiRequestBTCExplorer;
-import com.scorpius.explorer.bitcoin.RateLimitedBTCExplorer;
 import com.scorpius.explorer.bitcoin.record.BTCAddress;
 import com.scorpius.explorer.bitcoin.record.BTCTransaction;
 import javax.annotation.Nullable;
 
-public class MultiBTCExplorer implements MultiRequestBTCExplorer {
+public class MultiSourceBTCExplorer extends MultiRequestBTCExplorer {
 
     private final RateLimitedBTCExplorer[] explorers;
 
-    public MultiBTCExplorer(RateLimitedBTCExplorer... rateLimitedBTCExplorers) {
+    public MultiSourceBTCExplorer(RateLimitedBTCExplorer... rateLimitedBTCExplorers) {
         this.explorers = rateLimitedBTCExplorers;
     }
 

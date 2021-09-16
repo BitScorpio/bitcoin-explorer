@@ -4,7 +4,6 @@ import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Multimap;
 import com.scorpius.explorer.bitcoin.impl.BlockchainBTCExplorer;
 import com.scorpius.explorer.bitcoin.impl.BlockcypherBTCExplorer;
-import com.scorpius.explorer.bitcoin.impl.MultiBTCExplorer;
 import com.scorpius.explorer.bitcoin.record.BTCAddress;
 import com.scorpius.explorer.bitcoin.record.BTCInput;
 import com.scorpius.explorer.bitcoin.record.BTCOutput;
@@ -35,7 +34,7 @@ class BTCExplorerTest {
     public BTCExplorerTest() {
         BlockchainBTCExplorer blockchainBTCExplorer = new BlockchainBTCExplorer();
         BlockcypherBTCExplorer blockcypherBTCExplorer = new BlockcypherBTCExplorer();
-        MultiBTCExplorer multiBTCExplorer = new MultiBTCExplorer(blockchainBTCExplorer, blockcypherBTCExplorer);
+        MultiSourceBTCExplorer multiBTCExplorer = new MultiSourceBTCExplorer(blockchainBTCExplorer, blockcypherBTCExplorer);
         explorers = List.of(blockchainBTCExplorer, blockcypherBTCExplorer, multiBTCExplorer);
     }
 
@@ -49,9 +48,15 @@ class BTCExplorerTest {
                 try {
                     log.debug("[{}] [Address]-> {}", explorer.getClass().getSimpleName(), rawAddress);
                     BTCAddress address = explorer.getAddress(rawAddress);
+
+                    Assertions.assertNotEquals(null, address.hash());
+                    Assertions.assertNotEquals(-1, address.balance());
+                    Assertions.assertNotEquals(-1, address.transactionsCount());
+                    Assertions.assertNotEquals(null, address.transactions());
+
                     Assertions.assertEquals(rawAddress, address.hash());
-                    Assertions.assertNotEquals(0, address.transactionsCount());
                     Assertions.assertNotEquals(0, address.transactions().size());
+
                     addresses.put(explorer, address);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -77,6 +82,15 @@ class BTCExplorerTest {
                           address.hash(),
                           address.transactions().size(),
                           address.transactionsCount());
+
+                for (BTCTransaction transaction : address.transactions()) {
+                    Assertions.assertNotEquals(0, transaction.fee());
+                    Assertions.assertNotEquals(0, transaction.blockHeight());
+                    Assertions.assertNotEquals(0, transaction.inputsCount());
+                    Assertions.assertNotEquals(0, transaction.outputsCount());
+                    Assertions.assertNotEquals(0, transaction.inputs().size());
+                    Assertions.assertNotEquals(0, transaction.outputs().size());
+                }
 
                 long totalSent = address.transactions()
                                         .stream()

@@ -3,10 +3,10 @@ package com.scorpius.explorer.bitcoin;
 import com.scorpius.explorer.bitcoin.record.BTCAddress;
 import javax.annotation.Nullable;
 
-public interface MultiRequestBTCExplorer extends BTCExplorer {
+public abstract class MultiRequestBTCExplorer implements BTCExplorer {
 
     @Override
-    default BTCAddress getAddress(String address) throws Exception {
+    public final BTCAddress getAddress(String address) throws Exception {
         BTCAddress btcAddress = null;
         do {
             btcAddress = getAddressCombineTransactions(address, btcAddress);
@@ -14,5 +14,5 @@ public interface MultiRequestBTCExplorer extends BTCExplorer {
         return btcAddress;
     }
 
-    BTCAddress getAddressCombineTransactions(String address, @Nullable BTCAddress existingAddress) throws Exception;
+    protected abstract BTCAddress getAddressCombineTransactions(String address, @Nullable BTCAddress existingAddress) throws Exception;
 }
