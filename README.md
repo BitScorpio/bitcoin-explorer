@@ -4,7 +4,7 @@ A bitcoin explorer library that utilizes multiple data sources at once.
 
 ## Prerequisites
 
-* [Java 17](https://www.oracle.com/java/technologies/downloads/)
+* [Java 16](https://www.oracle.com/java/technologies/downloads/)
 * [Maven](https://maven.apache.org/download.cgi)
 
 ## Features
