@@ -2,7 +2,7 @@
 
 A bitcoin explorer library that utilizes multiple data sources at once.
 
-[![Maven Status](https://maven-badges.herokuapp.com/maven-central/io.github.bitscorpio/bitcoin-explorer/badge.svg)](https://search.maven.org/artifact/io.github.bitscorpio/bitcoin-explorer/)
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/io.github.bitscorpio/bitcoin-explorer/badge.svg?gav=true)](https://search.maven.org/artifact/io.github.bitscorpio/bitcoin-explorer/)
 [![Javadocs](http://www.javadoc.io/badge/io.github.bitscorpio/bitcoin-explorer.svg)](https://www.javadoc.io/doc/io.github.bitscorpio/)
 [![License](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
