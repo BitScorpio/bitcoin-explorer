@@ -6,7 +6,7 @@
 
     <groupId>io.github.bitscorpio</groupId>
     <artifactId>bitcoin-explorer</artifactId>
-    <version>1.0-alpha</version>
+    <version>1.0.1-alpha</version>
 
     <name>${project.groupId}:${project.artifactId}</name>
     <description>A bitcoin explorer library that utilizes multiple data sources at once.
@@ -49,6 +49,7 @@
         <java.version>16</java.version>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
     <dependencies>
@@ -86,14 +87,14 @@
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>1.7.32</version>
+            <version>2.0.0-alpha5</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.slf4j/slf4j-api -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-log4j12</artifactId>
-            <version>1.7.32</version>
+            <version>2.0.0-alpha5</version>
             <scope>test</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
@@ -108,12 +109,14 @@
     <build>
         <plugins>
             <plugin>
+                <groupId>org.sonatype.ossindex.maven</groupId>
+                <artifactId>ossindex-maven-plugin</artifactId>
+                <version>3.1.0</version>
+            </plugin>
+            <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.0.0-M5</version>
-                <configuration>
-                    <skipTests>true</skipTests>
-                </configuration>
             </plugin>
             <plugin>
                 <groupId>org.sonatype.plugins</groupId>

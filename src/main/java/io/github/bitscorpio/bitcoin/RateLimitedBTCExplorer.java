@@ -35,7 +35,15 @@ public abstract class RateLimitedBTCExplorer extends MultiRequestBTCExplorer {
         return rateLimitAvoider;
     }
 
+    /**
+     * Creates a {@link BTCAddress} JSON deserializer.
+     * @return {@link JsonDeserializer}
+     */
     protected abstract JsonDeserializer<BTCAddress> createAddressDeserializer();
 
+    /**
+     * Creates a {@link BTCTransaction} JSON deserializer.
+     * @return {@link JsonDeserializer}
+     */
     protected abstract JsonDeserializer<BTCTransaction> createTransactionDeserializer();
 }
