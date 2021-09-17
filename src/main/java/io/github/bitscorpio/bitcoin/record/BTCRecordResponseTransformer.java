@@ -14,6 +14,11 @@ public class BTCRecordResponseTransformer implements ResponseTransformer {
 
     private final ObjectMapper objectMapper;
 
+    /**
+     * A constructor that uses the supplied JSON deserializers to return {@link BTCAddress} and {@link BTCTransaction} records.
+     * @param addressDeserializer {@link BTCAddress} JSON deserializer.
+     * @param transactionDeserializer {@link BTCTransaction} JSON deserializer.
+     */
     public BTCRecordResponseTransformer(JsonDeserializer<BTCAddress> addressDeserializer, JsonDeserializer<BTCTransaction> transactionDeserializer) {
         SimpleModule module = new SimpleModule();
         module.addDeserializer(BTCAddress.class, addressDeserializer);
