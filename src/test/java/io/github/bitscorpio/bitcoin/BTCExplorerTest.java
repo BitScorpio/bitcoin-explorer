@@ -22,15 +22,15 @@ class BTCExplorerTest {
 
     private final String[] rawAddresses = {
         "bc1q0hhxpv6u9u0eh3qv5gf4zx2zlvpqn4m7cacxmm",
-        "1KRdZbn6BqfuALTEQJsmX24h8hG8C3YobM",
         "12RUqdJfKR44q6fJd3RbbfSfST84tvSCAV",
-        "3D7VugNn3u8kMZXj1dSYvwHUsy92b85d94"};
+        "1KRdZbn6BqfuALTEQJsmX24h8hG8C3YobM"
+    };
 
     private final String[] rawTransactions = {
         "659135664894e50040830edb516a76f704fd2be409ecd8d1ea9916c002ab28a2",
         "5143cf232576ae53e8991ca389334563f14ea7a7c507a3e081fbef2538c84f6e",
-        "38d97c6bfecdbe201e17787534674bccb57f292a19a99f9f421ebbf6347fbd45",
-        "5b361631bd5c47a5476cd3a1f216ab8c6219421c2d3c660fe23041b309e655a7"};
+        "5b361631bd5c47a5476cd3a1f216ab8c6219421c2d3c660fe23041b309e655a7"
+    };
 
     public BTCExplorerTest() {
         BlockchainBTCExplorer blockchainBTCExplorer = new BlockchainBTCExplorer();
