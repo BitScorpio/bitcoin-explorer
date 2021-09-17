@@ -6,6 +6,9 @@ A bitcoin explorer library that utilizes multiple data sources at once.
 [![Javadocs](http://www.javadoc.io/badge/io.github.bitscorpio/bitcoin-explorer.svg)](https://www.javadoc.io/doc/io.github.bitscorpio/)
 [![License](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 
+[![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/BitScorpio/bitcoin-explorer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/BitScorpio/bitcoin-explorer/context:java)
+[![Total alerts](https://img.shields.io/lgtm/alerts/g/BitScorpio/bitcoin-explorer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/BitScorpio/bitcoin-explorer/alerts/)
+
 ## Table of Contents
 
 1. [Prerequisites](#Prerequisites)
