@@ -32,7 +32,7 @@ A bitcoin explorer library that utilizes multiple data sources at once.
 
 ## Install with Maven
 
-[![Maven Status](https://maven-badges.herokuapp.com/maven-central/io.github.bitscorpio/bitcoin-explorer/badge.svg)](https://search.maven.org/artifact/io.github.bitscorpio/bitcoin-explorer/)
+[![Maven Status](https://maven-badges.herokuapp.com/maven-central/io.github.bitscorpio/bitcoin-explorer/badge.svg?gav=true)](https://search.maven.org/artifact/io.github.bitscorpio/bitcoin-explorer/)
 
 Replace `{version}` with the latest version indicated above.
 
