@@ -10,7 +10,7 @@ on:
     workflow_dispatch:
 
 jobs:
-    build:
+    test:
         runs-on: ubuntu-latest
 
         steps:
@@ -25,3 +25,9 @@ jobs:
 
             -   name: Test with Maven
                 run: mvn -B test --file pom.xml
+
+            -   name: Publish Unit Test Results
+                uses: EnricoMi/publish-unit-test-result-action@v1
+                if: always()
+                with:
+                    files: test-results/**/*.xml
