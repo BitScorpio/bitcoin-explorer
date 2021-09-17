@@ -10,8 +10,8 @@ A bitcoin explorer library that utilizes multiple data sources at once.
 
 1. [Prerequisites](#Prerequisites)
 2. [Features](#Features)
-3. [Install with Maven](#Install with Maven)
-4. [Supported Data Sources](#Supported Data Sources)
+3. [Install with Maven](#Install-with-Maven)
+4. [Supported Data Sources](#Supported-Data-Sources)
 5. [Usage](#Usage)
 6. [Warning](#Warning)
 
