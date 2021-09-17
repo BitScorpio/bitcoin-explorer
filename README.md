@@ -2,18 +2,16 @@
 
 A bitcoin explorer library that utilizes multiple data sources at once.
 
-#### Maven Central
-
 [![Maven Status](https://maven-badges.herokuapp.com/maven-central/io.github.bitscorpio/bitcoin-explorer/badge.svg?gav=true)](https://search.maven.org/artifact/io.github.bitscorpio/bitcoin-explorer/)
 [![Javadocs](http://www.javadoc.io/badge/io.github.bitscorpio/bitcoin-explorer.svg)](https://www.javadoc.io/doc/io.github.bitscorpio/)
-[![License](https://img.shields.io/badge/License-GPL%203.0-blue.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
-
-#### Development
-
-[![Build Status](https://github.com/BitScorpio/bitcoin-explorer/workflows/Build/badge.svg)](https://github.com/BitScorpio/bitcoin-explorer/actions/workflows/build.yml)
-[![Test Status](https://github.com/BitScorpio/bitcoin-explorer/workflows/Test/badge.svg)](https://github.com/BitScorpio/bitcoin-explorer/actions/workflows/Test.yml)
+[![License](https://img.shields.io/badge/License-GPL%203.0-brightgreen.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
 [![Language grade: Java](https://img.shields.io/lgtm/grade/java/g/BitScorpio/bitcoin-explorer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/BitScorpio/bitcoin-explorer/context:java)
 [![Total alerts](https://img.shields.io/lgtm/alerts/g/BitScorpio/bitcoin-explorer.svg?logo=lgtm&logoWidth=18)](https://lgtm.com/projects/g/BitScorpio/bitcoin-explorer/alerts/)
+
+Branch | Build | Unit Tests
+:---:|:---:|:---:
+[master](https://github.com/BitScorpio/bitcoin-explorer/tree/master)            |   ![Build Status](https://github.com/BitScorpio/bitcoin-explorer/actions/workflows/build.yml/badge.svg?branch=master)         |   ![Test Status](https://github.com/BitScorpio/bitcoin-explorer/actions/workflows/test.yml/badge.svg?branch=master)
+[development](https://github.com/BitScorpio/bitcoin-explorer/tree/development)  |   ![Build Status](https://github.com/BitScorpio/bitcoin-explorer/actions/workflows/build.yml/badge.svg?branch=development)    |   ![Test Status](https://github.com/BitScorpio/bitcoin-explorer/actions/workflows/test.yml/badge.svg?branch=development)
 
 ## Table of Contents
 
@@ -53,7 +51,7 @@ Replace `{version}` with the latest version indicated above.
 ## Supported Data Sources
 
 Provider | API Documentation
-------------- | -------------
+:---:|:---:
 [Blockchain](https://www.blockchain.com)  | [Blockchain Data API](https://www.blockchain.com/api/blockchain_api)
 [Blockcypher](https://www.blockcypher.com)  | [Blockcypher API](https://www.blockcypher.com/dev/bitcoin/#introduction)
 
